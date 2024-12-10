@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:puma_is/controllers/EventController.dart';
-import 'package:puma_is/models/event_model.dart';
-import 'package:puma_is/services/event_services.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ManageEventPage extends StatefulWidget {
   @override
@@ -10,29 +7,31 @@ class ManageEventPage extends StatefulWidget {
 }
 
 class _ManageEventPageState extends State<ManageEventPage> {
-  final EventController _eventController = EventController();
-  final TextEditingController _eventIDController = TextEditingController();
+  final TextEditingController _event_IDController = TextEditingController();
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
-  final _locationController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
+  final TextEditingController _statusController = TextEditingController();
   DateTime? _selectedDate;
 
-  // To clear input fields after submission
-  void _clearFields() {
-    _eventIDController.clear();
-    _titleController.clear();
-    _descriptionController.clear();
-    _locationController.clear();
+  List<DocumentSnapshot> _eventList = [];
+  String? _selectedEvent_ID;
+
+  // Fetch Events from Firebase
+  void _fetchEvent() async {
+    var event = await FirebaseFirestore.instance.collection('events').get();
     setState(() {
-      _selectedDate = null;
+      _eventList = event.docs;
     });
   }
 
-  // Handle Event Action (Create or Update)
-  void _handleEventAction({String? eventId}) {
-    if (_titleController.text.isEmpty ||
+  // Handle Create/Update Event
+  void _handleEventAction({String? event_ID}) async {
+    if (_event_IDController.text.isEmpty ||
+        _titleController.text.isEmpty ||
         _descriptionController.text.isEmpty ||
         _locationController.text.isEmpty ||
+        _statusController.text.isEmpty ||
         _selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Please fill in all fields and select a date")),
@@ -40,71 +39,224 @@ class _ManageEventPageState extends State<ManageEventPage> {
       return;
     }
 
-    EventModel event = EventModel(
-      eventID: _eventIDController.text, // Manually added eventID
-      name: _titleController.text,
-      description: _descriptionController.text,
-      location: _locationController.text,
-      date: _selectedDate.toString(),
-      isUpcoming: true, // Flag to indicate event is upcoming
+    Map<String, dynamic> eventData = {
+      'event_ID': _event_IDController.text,
+      'title': _titleController.text,
+      'description': _descriptionController.text,
+      'location': _locationController.text,
+      'Status': _statusController.text,
+      'date': _selectedDate,
+    };
+
+    try {
+      if (event_ID == null) {
+        // Add Event
+        await FirebaseFirestore.instance.collection('events').add(eventData);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Event added successfully")));
+      } else {
+        // Update Event
+        await FirebaseFirestore.instance
+            .collection('events')
+            .doc(event_ID)
+            .update(eventData);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Event updated successfully")));
+      }
+      _clearFields();
+      _fetchEvent();
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text("Error saving event: $e")));
+    }
+  }
+
+  // Delete Event with Confirmation
+  void _deleteEvent(String event_ID) async {
+    bool confirm = await showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('Confirm Deletion'),
+        content: Text('Are you sure you want to delete this event?'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: Text('Delete'),
+          ),
+        ],
+      ),
     );
 
-    if (eventId == null) {
-      _eventController.createEvent(event);
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Event added successfully")));
-    } else {
-      _eventController.updateEvent(event, eventId); // Use eventId for updating
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Event updated successfully")));
+    if (confirm) {
+      try {
+        await FirebaseFirestore.instance
+            .collection('events')
+            .doc(event_ID)
+            .delete();
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Event deleted successfully")));
+        _fetchEvent();
+      } catch (e) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text("Error deleting event: $e")));
+      }
     }
+  }
 
-    _clearFields(); // Clear fields after submission
+  // Clear Input Fields
+  void _clearFields() {
+    _event_IDController.clear();
+    _titleController.clear();
+    _descriptionController.clear();
+    _locationController.clear();
+    _statusController.clear();
+    setState(() {
+      _selectedDate = null;
+      _selectedEvent_ID = null;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchEvent();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Manage Event")),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
+      appBar: AppBar(
+        title: Text('Manage Event'),
+        backgroundColor: Colors.teal,
+      ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              controller: _eventIDController,
-              decoration: InputDecoration(labelText: "Event ID"),
+            // Card with form fields
+            Card(
+              elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Padding(
+                padding: EdgeInsets.all(16.0),
+                child: Column(
+                  children: [
+                    Text(
+                      _selectedEvent_ID == null ? 'Add Event' : 'Update Event',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.teal,
+                      ),
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: _event_IDController,
+                      decoration: InputDecoration(labelText: 'Event_ID'),
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: _titleController,
+                      decoration: InputDecoration(labelText: 'Title'),
+                    ),
+                    SizedBox(height: 15),
+                    // Image under Title TextField
+                    Image.asset('assets/images/temuAlumni.jpeg'), // Add your image path here
+                    SizedBox(height: 15),
+                    TextFormField(
+                      controller: _descriptionController,
+                      decoration: InputDecoration(labelText: 'Description'),
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: _locationController,
+                      decoration: InputDecoration(labelText: 'Location'),
+                    ),
+                    SizedBox(height: 20),
+                    TextFormField(
+                      controller: _statusController,
+                      decoration: InputDecoration(labelText: 'Status'),
+                    ),
+                    SizedBox(height: 15),
+                    ElevatedButton(
+                      onPressed: () async {
+                        _selectedDate = await showDatePicker(
+                          context: context,
+                          initialDate: DateTime.now(),
+                          firstDate: DateTime(2000),
+                          lastDate: DateTime(2100),
+                        );
+                      },
+                      child: Text("Pick Date"),
+                    ),
+                    SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: () {
+                        _handleEventAction(event_ID: _selectedEvent_ID);
+                      },
+                      style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+                      child: Text(
+                        _selectedEvent_ID == null
+                            ? 'Add Event'
+                            : 'Update Event',
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-            TextField(
-              controller: _titleController,
-              decoration: InputDecoration(labelText: "Event Name"),
+            SizedBox(height: 30),
+            Text(
+              'Event List',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal,
+              ),
             ),
-            TextField(
-              controller: _descriptionController,
-              decoration: InputDecoration(labelText: "Event Description"),
-            ),
-            TextField(
-              controller: _locationController,
-              decoration: InputDecoration(labelText: "Event Location"),
-            ),
-            // Date Picker (example)
-            ListTile(
-              title: Text(_selectedDate == null ? 'Select Date' : _selectedDate.toString()),
-              onTap: () async {
-                DateTime? picked = await showDatePicker(
-                  context: context,
-                  initialDate: DateTime.now(),
-                  firstDate: DateTime(2000),
-                  lastDate: DateTime(2101),
+            ListView.builder(
+              shrinkWrap: true,
+              itemCount: _eventList.length,
+              itemBuilder: (context, index) {
+                var event = _eventList[index];
+                return ListTile(
+                  title: Text(event['title']),
+                  subtitle: Text(event['description']),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit, color: Colors.teal),
+                        onPressed: () {
+                          _event_IDController.text = event['event_ID'];
+                          _titleController.text = event['title'];
+                          _descriptionController.text = event['description'];
+                          _locationController.text = event['location'];
+                          _statusController.text = event['Status'];
+                          setState(() {
+                            _selectedDate =
+                                (event['date'] as Timestamp).toDate();
+                            _selectedEvent_ID = event.id;
+                          });
+                        },
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          _deleteEvent(event.id);
+                        },
+                      ),
+                    ],
+                  ),
                 );
-                if (picked != null) {
-                  setState(() {
-                    _selectedDate = picked;
-                  });
-                }
               },
-            ),
-            ElevatedButton(
-              onPressed: () => _handleEventAction(),
-              child: Text("Create Event"),
             ),
           ],
         ),

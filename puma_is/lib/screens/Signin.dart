@@ -31,7 +31,8 @@ class SignInState extends State<SignIn> {
 
   // Validate Email and Password
   bool _validateEmail(String email) {
-    return RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$").hasMatch(email);
+    return RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$")
+        .hasMatch(email);
   }
 
   bool _validatePassword(String password) {
@@ -39,59 +40,35 @@ class SignInState extends State<SignIn> {
   }
 
   Future<void> onPressedSignIn() async {
-    if (email.isEmpty || password.isEmpty) {
-      const snackBar = SnackBar(content: Text('Please provide email and password'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      return;
-    }
-
-    if (!_validateEmail(email)) {
-      const snackBar = SnackBar(content: Text('Please enter a valid email'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      return;
-    }
-
-    if (!_validatePassword(password)) {
-      const snackBar = SnackBar(content: Text('Password must be at least 6 characters'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      return;
-    }
-
-    try {
-      // Check if the login credentials match the admin's credentials directly
-      if (email == "admin@gmail.com" && password == "Admin123") {
-        // Navigate to Admin Dashboard if it's an admin email
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => Admin_Dashboard()),
-        );
-      } else {
-        // Attempt to sign in with Firebase Authentication for regular users
-        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
+    // Check if email and password match admin credentials
+    if (email == 'admin@gmail.com' && password == 'Admin123') {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const Admin_Dashboard()),
+      );
+    } else {
+      // Perform Firebase authentication if not admin
+      try {
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
-
-        // Check if the sign-in was successful
-        if (userCredential.user != null) {
-          // Navigate to HomePage if it's a regular user
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => homePage(loggedInEmail: email)),
-          );
-        }
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const homePage(loggedInEmail: '')),
+        );
+      } catch (e) {
+        // Handle error
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error signing in: $e')),
+        );
       }
-    } catch (e) {
-      // If an error occurs (e.g., user not found, wrong password), show an error message
-      const snackBar = SnackBar(content: Text('Incorrect email or password'));
-      ScaffoldMessenger.of(context).showSnackBar(snackBar);
-      return;
     }
   }
 
   void onPressedSignUp() {
     Navigator.push(
-      context, MaterialPageRoute(builder: (context) => const Signup()));
+        context, MaterialPageRoute(builder: (context) => const Signup()));
   }
 
   @override
@@ -106,18 +83,28 @@ class SignInState extends State<SignIn> {
               gradient: LinearGradient(colors: [
                 Color(0xffB3C8CF),
                 Color(0xffFFE3E3),
-              ]), 
+              ]),
             ),
-            child: const Padding(
-              padding: EdgeInsets.only(top: 60.0, left: 22, right: 22),
-              child: Text(
-                'Stay Connected and Stay Informed!',
-                textAlign: TextAlign.center,
-                style: TextStyle(
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 60.0, left: 22, right: 22),
+            child: Column(
+              children: [
+                const Image(
+                  image: AssetImage('assets/images/PUMA_IS_BG.jpg'),
+                  height: 100,
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Stay Connected and Stay Informed!',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
                     fontSize: 20,
                     color: Color.fromRGBO(255, 255, 255, 0.7),
-                    fontWeight: FontWeight.bold),
-              ),
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
             ),
           ),
           Padding(
@@ -125,19 +112,17 @@ class SignInState extends State<SignIn> {
             child: Container(
               decoration: const BoxDecoration(
                 borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(40),
-                    topRight: Radius.circular(40)),
+                  topLeft: Radius.circular(40),
+                  topRight: Radius.circular(40),
+                ),
                 color: Colors.white,
               ),
               height: double.infinity,
-              width: double.infinity,
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.all(18.0),
                   child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      // Email Input Field
                       TextField(
                         onChanged: onChangedUsername,
                         decoration: InputDecoration(
@@ -164,7 +149,6 @@ class SignInState extends State<SignIn> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      // Password Input Field
                       TextField(
                         obscureText: !_isPasswordVisible,
                         onChanged: onChangedPassword,
@@ -238,8 +222,6 @@ class SignInState extends State<SignIn> {
                       ),
                       const SizedBox(height: 50),
                       Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           const Text(
                             "Don't have an account?",
@@ -258,7 +240,7 @@ class SignInState extends State<SignIn> {
                             ),
                           ),
                         ],
-                      )
+                      ),
                     ],
                   ),
                 ),

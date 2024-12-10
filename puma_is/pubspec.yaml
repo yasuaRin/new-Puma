@@ -23,7 +23,10 @@ dependencies:
   firebase_storage: ^12.3.7
   intl: ^0.20.1
   flutter_datetime_picker_plus: ^2.2.0
-  
+  lottie: ^3.2.0
+  animated_splash_screen: ^1.3.0
+  flutter_native_splash: ^2.4.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -33,6 +36,8 @@ flutter:
   assets:
     - assets/images/candidates-1.jpg
     - assets/images/candidates-2.jpg
+    - assets/images/PUMA_IS_BG.jpg
     - assets/images/logo.png
+    - assets/images/temuAlumni.jpeg
     - assets/images/profile_pic.png
   uses-material-design: true

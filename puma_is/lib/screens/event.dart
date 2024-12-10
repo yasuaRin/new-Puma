@@ -1,164 +1,250 @@
-// import 'package:flutter/material.dart';
-// import 'package:puma_is/models/event_model.dart'; // Import EventModel
+import 'package:flutter/material.dart';
+import 'package:puma_is/controllers/EventController.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Ensure you have this import for Timestamp
 
-// class EventPage extends StatefulWidget {
-//   const EventPage({Key? key}) : super(key: key);
+class EventPage extends StatefulWidget {
+  @override
+  _EventPageState createState() => _EventPageState();
+}
 
-//   @override
-//   _EventPageState createState() => _EventPageState();
-// }
+class _EventPageState extends State<EventPage> {
+  final EventController _controller = EventController();
+  List<Map<String, dynamic>> _eventList = [];
+  List<Map<String, dynamic>> _filteredEventList = [];
+  String _filter = 'All'; // Default filter (All events)
 
-// class _EventPageState extends State<EventPage> {
-//   late List<EventModel> events; // Add a list to store events
-//   late List<EventModel> filteredEvents;
+  @override
+  void initState() {
+    super.initState();
+    _fetchAllEvents();
+  }
 
-//   @override
-//   void initState() {
-//     super.initState();
-//     // Placeholder for actual event fetching. Replace with API call or database query.
-//     events = [
-//       EventModel(
-//         name: "Tech Conference 2024",
-//         date: DateTime(2024, 5, 15),
-//         description: "Join us for the annual tech conference.",
-//         location: "San Francisco, CA", eventID: '',
-//       ),
-//       EventModel(
-//         name: "AI Workshop",
-//         date: DateTime(2023, 12, 10),
-//         description: "Learn about AI and its applications.",
-//         location: "New York, NY",
-//       ),
-//       // Add more events here...
-//     ];
-//     filteredEvents = events;
-//   }
+  // Fetch all events
+  void _fetchAllEvents() async {
+    try {
+      List<Map<String, dynamic>> data = await _controller.fetchAllEvent();
+      setState(() {
+        _eventList = data;
+        _filteredEventList = data; // Initially display all events
+      });
+    } catch (error) {
+      _showErrorDialog("Error fetching events: $error");
+    }
+  }
 
-//   // Function to show filter dialog and apply selected filter
-//   void showEventFilterDialog() {
-//     showDialog(
-//       context: context,
-//       builder: (BuildContext context) {
-//         return AlertDialog(
-//           title: const Text('Filter Events'),
-//           content: Column(
-//             mainAxisSize: MainAxisSize.min,
-//             children: <Widget>[
-//               ListTile(
-//                 title: const Text('Upcoming Events'),
-//                 onTap: () {
-//                   setState(() {
-//                     filteredEvents = events
-//                         .where((event) => event.date.isAfter(DateTime.now()))
-//                         .toList();
-//                   });
-//                   Navigator.of(context).pop(); // Close the dialog
-//                 },
-//               ),
-//               ListTile(
-//                 title: const Text('Past Events'),
-//                 onTap: () {
-//                   setState(() {
-//                     filteredEvents = events
-//                         .where((event) => event.date.isBefore(DateTime.now()))
-//                         .toList();
-//                   });
-//                   Navigator.of(context).pop(); // Close the dialog
-//                 },
-//               ),
-//             ],
-//           ),
-//           actions: <Widget>[
-//             TextButton(
-//               onPressed: () {
-//                 Navigator.of(context).pop(); // Close the dialog
-//               },
-//               child: const Text('Cancel'),
-//             ),
-//           ],
-//         );
-//       },
-//     );
-//   }
+  // Filter events based on past or upcoming
+  void _filterEvents() {
+    if (_filter == 'Upcoming') {
+      setState(() {
+        _filteredEventList = _eventList.where((event) {
+          DateTime eventDate = event['dateTime'] is Timestamp
+              ? (event['dateTime'] as Timestamp).toDate()
+              : DateTime.now();
+          return eventDate.isAfter(DateTime.now()); // Upcoming events
+        }).toList();
+      });
+    } else if (_filter == 'Past') {
+      setState(() {
+        _filteredEventList = _eventList.where((event) {
+          DateTime eventDate = event['dateTime'] is Timestamp
+              ? (event['dateTime'] as Timestamp).toDate()
+              : DateTime.now();
+          return eventDate.isBefore(DateTime.now()); // Past events
+        }).toList();
+      });
+    } else {
+      setState(() {
+        _filteredEventList = _eventList; // Show all events
+      });
+    }
+  }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: const Text('Events'),
-//         actions: [
-//           IconButton(
-//             icon: const Icon(Icons.filter_alt),
-//             onPressed: showEventFilterDialog, // Show filter dialog when clicked
-//           ),
-//         ],
-//       ),
-//       body: filteredEvents.isEmpty
-//           ? const Center(child: CircularProgressIndicator())
-//           : ListView.builder(
-//               itemCount: filteredEvents.length,
-//               itemBuilder: (context, index) {
-//                 final event = filteredEvents[index];
-//                 return EventCard(event: event);
-//               },
-//             ),
-//     );
-//   }
-// }
+  // Dialog to show error
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Error"),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text("OK"),
+            ),
+          ],
+        );
+      },
+    );
+  }
 
-// class EventCard extends StatelessWidget {
-//   final EventModel event;
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Event Page"),
+        backgroundColor: Colors.deepPurple,
+        elevation: 5,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.filter_list),
+            onPressed: () {
+              showModalBottomSheet(
+                context: context,
+                builder: (context) => Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ListTile(
+                        title: Text("All Events"),
+                        onTap: () {
+                          setState(() {
+                            _filter = 'All';
+                          });
+                          _filterEvents();
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: Text("Upcoming Events"),
+                        onTap: () {
+                          setState(() {
+                            _filter = 'Upcoming';
+                          });
+                          _filterEvents();
+                          Navigator.pop(context);
+                        },
+                      ),
+                      ListTile(
+                        title: Text("Past Events"),
+                        onTap: () {
+                          setState(() {
+                            _filter = 'Past';
+                          });
+                          _filterEvents();
+                          Navigator.pop(context);
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Display the info list or a message if no data
+            Expanded(
+              child: _filteredEventList.isEmpty
+                  ? Center(
+                      child: Text(
+                        "No events available.",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.grey,
+                        ),
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: _filteredEventList.length,
+                      itemBuilder: (context, index) {
+                        final event = _filteredEventList[index];
+                        final eventDate = event['dateTime'] is Timestamp
+                            ? (event['dateTime'] as Timestamp).toDate()
+                            : DateTime.now();
 
-//   const EventCard({Key? key, required this.event}) : super(key: key);
+                        // If event['dateTime'] is null, show 'Date not available'
+                        if (eventDate == null) {
+                          return Card(
+                            margin: const EdgeInsets.symmetric(vertical: 8.0),
+                            elevation: 5,
+                            color: Colors.white,
+                            child: ListTile(
+                              title: Text(
+                                event['title'],
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 18,
+                                  color: Colors.deepPurple,
+                                ),
+                              ),
+                              subtitle: Text('Date not available'),
+                            ),
+                          );
+                        }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Card(
-//       elevation: 4,
-//       margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-//       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-//       child: Padding(
-//         padding: const EdgeInsets.all(15.0),
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             Text(
-//               event.name,
-//               style: const TextStyle(
-//                 fontSize: 20,
-//                 fontWeight: FontWeight.bold,
-//               ),
-//             ),
-//             const SizedBox(height: 5),
-//             Text(
-//               'Date: ${event.date}',
-//               style: const TextStyle(
-//                 fontSize: 16,
-//                 color: Colors.grey,
-//               ),
-//             ),
-//             const SizedBox(height: 10),
-//             Text(
-//               event.description,
-//               style: const TextStyle(fontSize: 16),
-//             ),
-//             const SizedBox(height: 10),
-//             Text(
-//               'Location: ${event.location}',
-//               style: const TextStyle(fontSize: 16, color: Colors.blue),
-//             ),
-//             const SizedBox(height: 15),
-//             ElevatedButton(
-//               onPressed: () {
-//                 ScaffoldMessenger.of(context).showSnackBar(
-//                   SnackBar(content: Text('Event: ${event.name} selected')),
-//                 );
-//               },
-//               child: const Text('View Event'),
-//             ),
-//           ],
-//         ),
-//       ),
-//     );
-//   }
-// }
+                        // Define status color based on event date
+                        final bool isPastEvent = eventDate.isBefore(DateTime.now());
+                        Color statusColor = isPastEvent ? Colors.red : Colors.green;
+
+                        return Card(
+                          margin: const EdgeInsets.symmetric(vertical: 8.0),
+                          elevation: 5,
+                          color: Colors.white,
+                          child: ListTile(
+                            leading: Icon(
+                              isPastEvent ? Icons.history : Icons.event,
+                              color: statusColor,
+                            ),
+                            title: Text(
+                              event['title'],
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 18,
+                                color: Colors.deepPurple,
+                              ),
+                            ),
+                            subtitle: Padding(
+                              padding: const EdgeInsets.only(right: 16.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text("Description: ${event['description']}"),
+                                  Text("Location: ${event['location']}"),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Container(
+                                        padding: EdgeInsets.symmetric(
+                                            horizontal: 12, vertical: 6),
+                                        decoration: BoxDecoration(
+                                          color: statusColor,
+                                          borderRadius: BorderRadius.circular(8),
+                                        ),
+                                        child: Text(
+                                          isPastEvent ? 'Past' : 'Upcoming',
+                                          style: TextStyle(
+                                            color: Colors.white,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    "Date: ${eventDate.toLocal()}", // Display the converted date
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

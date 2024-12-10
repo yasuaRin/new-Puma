@@ -30,7 +30,7 @@ class _homePageState extends State<homePage> {
       case 'info': // Show InfoPage when selectedFeature is 'info'
         return InfoPage();
       case 'events': // Show EventsPage when selectedFeature is 'events'
-        // return EventPage();
+           return EventPage();
       default:
         return const Center(child: Text('Welcome to homepage'));
     }

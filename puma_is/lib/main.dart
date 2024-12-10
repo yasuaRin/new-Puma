@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:puma_is/screens/Signup.dart';
 import 'package:puma_is/screens/home.dart'; // Import the home page
 import 'package:puma_is/screens/SignIn.dart'; // Import the sign-in page
+import 'package:puma_is/splash_screen.dart'; // Import the splash screen
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,14 +16,16 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Your App',
+      title: 'PUMA IS',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: AuthChecker(), 
+      home: const SplashScreen(), // Set SplashScreen as the initial screen
       routes: {
-        '/signup':  (context) => Signup(),
-      },// Use AuthChecker to decide which screen to show
+        '/signup': (context) => Signup(),
+        '/signin': (context) => SignIn(),
+        '/home': (context) => homePage(loggedInEmail: ''), // Adjust as needed
+      },
     );
   }
 }

@@ -1,44 +1,86 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:puma_is/models/event_model.dart';
 
-class EventService {
-  final FirebaseFirestore _db = FirebaseFirestore.instance;
+class EventServices {
+  final CollectionReference _eventCollection =
+      FirebaseFirestore.instance.collection('events');
 
-  // Create Event in Firestore
-  Future<void> createEvent(EventModel event) async {
-    try {
-      // Firestore auto-generates document ID for new event
-      DocumentReference docRef = await _db.collection('events').add(event.toMap());
-
-      // Update the document with the manually added eventID field
-      await docRef.update({'eventID': event.eventID});
-      print("Event created with ID: ${docRef.id}");
-    } catch (e) {
-      print("Error creating event in Firestore: $e");
-    }
+  // Add new event
+  Future<void> addEvent({
+    required String event_ID,
+    required String title,
+    required String description,
+    required String location,
+    required String status,
+    required DateTime dateTime,
+  }) {
+    return _eventCollection.add({
+      'event_ID': event_ID,
+      'title': title,
+      'description': description,
+      'location': location,
+      'Status': status,
+      'dateTime': dateTime,
+    });
   }
 
-  // Update Event in Firestore
-  Future<void> updateEvent(EventModel event, String documentId) async {
-    try {
-      await _db.collection('events').doc(documentId).update(event.toMap());
-      print("Event updated successfully.");
-    } catch (e) {
-      print("Error updating event in Firestore: $e");
-    }
+  // Update event
+  Future<void> updateEvent({
+    required String event_ID,
+    required String title,
+    required String description,
+    required String location,
+    required String status,
+    required DateTime dateTime,
+  }) {
+    return _eventCollection.doc(event_ID).update({
+      'event_ID': event_ID,
+      'title': title,
+      'description': description,
+      'location': location,
+      'Status': status,
+      'dateTime': dateTime,
+    });
   }
 
-  // Fetch Events from Firestore
-  Stream<List<EventModel>> getEvents() {
-    try {
-      return _db.collection('events').snapshots().map((snapshot) {
-        return snapshot.docs.map((doc) {
-          return EventModel.fromMap(doc.data() as Map<String, dynamic>);
-        }).toList();
-      });
-    } catch (e) {
-      print("Error fetching events from Firestore: $e");
-      return Stream.empty();
-    }
+  // Delete event
+  Future<void> deleteEvent(String event_ID) {
+    return _eventCollection.doc(event_ID).delete();
+  }
+
+  // Fetch all events
+  Future<List<Map<String, dynamic>>> getAllEvent() async {
+    QuerySnapshot snapshot = await _eventCollection.get();
+    return snapshot.docs.map((doc) {
+      return {
+        'id': doc.id,
+        ...doc.data() as Map<String, dynamic>,
+      };
+    }).toList();
+  }
+
+  // Fetch events for a specific date
+  Future<List<Map<String, dynamic>>> getEventForDate(DateTime selectedDate) async {
+    QuerySnapshot snapshot = await _eventCollection
+        .where('dateTime', isEqualTo: selectedDate)
+        .get();
+    return snapshot.docs.map((doc) {
+      return {
+        'id': doc.id,
+        ...doc.data() as Map<String, dynamic>,
+      };
+    }).toList();
+  }
+
+  // Fetch events by a specific filter
+  Future<List<Map<String, dynamic>>> getEventByFilter(String filter) async {
+    QuerySnapshot snapshot = await _eventCollection
+        .where('Status', isEqualTo: filter) // Replace 'status' with your filter field
+        .get();
+    return snapshot.docs.map((doc) {
+      return {
+        'id': doc.id,
+        ...doc.data() as Map<String, dynamic>,
+      };
+    }).toList();
   }
 }
