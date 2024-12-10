@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "451578636579",
+    "project_id": "puma-is-2ae5f",
+    "storage_bucket": "puma-is-2ae5f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:451578636579:android:6ac3b39cfba972a2068496",
+        "android_client_info": {
+          "package_name": "com.example.puma_is"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfey2eF5TC7ip_FsXbC22ZUmnRKlVm4Rs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

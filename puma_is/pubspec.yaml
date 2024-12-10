@@ -1,0 +1,38 @@
+name: puma_is
+description: "A new Flutter project."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.5.4
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  cupertino_icons: ^1.0.8
+  firebase_core: ^3.8.1
+  firebase_auth: ^5.3.4
+  fluttertoast: ^8.2.8
+  cloud_firestore: ^5.5.1
+  google_fonts: ^6.2.1
+  flutter_svg: ^2.0.16
+  fl_chart: ^0.69.2
+  provider: ^6.1.2
+  firebase_storage: ^12.3.7
+  intl: ^0.20.1
+  flutter_datetime_picker_plus: ^2.2.0
+  
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  assets:
+    - assets/images/candidates-1.jpg
+    - assets/images/candidates-2.jpg
+    - assets/images/logo.png
+    - assets/images/profile_pic.png
+  uses-material-design: true
