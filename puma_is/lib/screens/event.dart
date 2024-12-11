@@ -203,11 +203,14 @@ class _EventPageState extends State<EventPage> {
                                 color: Colors.deepPurple,
                               ),
                             ),
+                             
                             subtitle: Padding(
                               padding: const EdgeInsets.only(right: 16.0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  SizedBox(height: 15),
+                                  Image.asset('assets/images/temuAlumni.jpeg'), // Add your image path here
                                   Text("Description: ${event['description']}"),
                                   Text("Location: ${event['location']}"),
                                   Row(

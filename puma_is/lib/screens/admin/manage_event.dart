@@ -166,9 +166,7 @@ class _ManageEventPageState extends State<ManageEventPage> {
                       controller: _titleController,
                       decoration: InputDecoration(labelText: 'Title'),
                     ),
-                    SizedBox(height: 15),
-                    // Image under Title TextField
-                    Image.asset('assets/images/temuAlumni.jpeg'), // Add your image path here
+                   
                     SizedBox(height: 15),
                     TextFormField(
                       controller: _descriptionController,

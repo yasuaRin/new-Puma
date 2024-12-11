@@ -6,6 +6,7 @@ import 'package:puma_is/screens/signin.dart';
 import 'package:puma_is/screens/admin/manage_voting.dart'; // Import the ManageVoting page
 import 'package:puma_is/screens/admin/manage_users.dart';
 import 'package:puma_is/screens/admin/manage_event.dart';
+import 'package:puma_is/screens/event.dart'; // Import the EventPage
 
 class Admin_Dashboard extends StatefulWidget {
   const Admin_Dashboard({Key? key}) : super(key: key);
@@ -16,6 +17,12 @@ class Admin_Dashboard extends StatefulWidget {
 
 class _AdminDashboardState extends State<Admin_Dashboard> {
   String selectedFeature = 'dashboard'; // Tracks the current selected feature
+  String selectedEventFeature =
+      'manage_event'; // Tracks the selected event feature
+  String selectedVotingFeature =
+      'manage_voting'; // Tracks the selected voting feature
+  String selectedInfoFeature =
+      'manage_info'; // Tracks the selected information feature
 
   // Widget that returns different pages based on the selected feature
   Widget buildBody() {
@@ -23,13 +30,17 @@ class _AdminDashboardState extends State<Admin_Dashboard> {
       case 'vote':
         return const VotePage(); // Display the Vote Page
       case 'info':
-        return ManageInfoPage(); // Display the Info Page
+        return InfoPage(); // Display the Info Page
+      case 'manage_info':
+        return ManageInfoPage();
       case 'manage_voting':
         return ManageVotingPage(); // Display the Manage Voting page
       case 'manage_users':
-        return ManageUsersPage();
+        return ManageUsersPage(); // Display the Manage Users page
       case 'manage_event':
-        return ManageEventPage();
+        return ManageEventPage(); // Display the Manage Event page
+      case 'event_page':
+        return EventPage(); // Display the Event Page
       default:
         return const Center(
           child: Text(
@@ -88,45 +99,87 @@ class _AdminDashboardState extends State<Admin_Dashboard> {
               title: const Text('Manage Users'),
               leading: const Icon(Icons.person),
               onTap: () {
-                // Update selected feature state to 'manage_users'
                 setState(() {
                   selectedFeature = 'manage_users';
                 });
                 Navigator.pop(context); // Close the drawer
               },
             ),
-            ListTile(
-              title: const Text('Manage Voting'),
-              leading: const Icon(Icons.how_to_vote),
-              onTap: () {
-                // Update selected feature state to 'manage_voting'
-                setState(() {
-                  selectedFeature = 'manage_voting';
-                });
-                Navigator.pop(context); // Close the drawer
-              },
+            // Dropdown for Manage Voting using ExpansionTile
+            ExpansionTile(
+              title: const Text('Vote'),
+              leading: const Icon(Icons.event),
+              children: <Widget>[
+                ListTile(
+                  title: const Text('Manage Vote'),
+                  onTap: () {
+                    setState(() {
+                      selectedFeature = 'manage_voting';
+                    });
+                    Navigator.pop(context); // Close the drawer
+                  },
+                ),
+                ListTile(
+                  title: const Text('Voting Page'),
+                  onTap: () {
+                    setState(() {
+                      selectedFeature = 'vote';
+                    });
+                    Navigator.pop(context); // Close the drawer
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              title: const Text('Manage Information'),
-              leading: const Icon(Icons.info),
-              onTap: () {
-                setState(() {
-                  selectedFeature = 'info';
-                });
-                Navigator.pop(context);
-              },
+            // Dropdown for Manage Information using ExpansionTile
+            ExpansionTile(
+              title: const Text('Information'),
+              leading: const Icon(Icons.event),
+              children: <Widget>[
+                ListTile(
+                  title: const Text('Manage Info'),
+                  onTap: () {
+                    setState(() {
+                      selectedFeature = 'manage_info';
+                    });
+                    Navigator.pop(context); // Close the drawer
+                  },
+                ),
+                ListTile(
+                  title: const Text('Info Page'),
+                  onTap: () {
+                    setState(() {
+                      selectedFeature = 'info';
+                    });
+                    Navigator.pop(context); // Close the drawer
+                  },
+                ),
+              ],
             ),
-            ListTile(
-              title: const Text('Manage Event'),
-              leading: const Icon(Icons.info),
-              onTap: () {
-                setState(() {
-                  selectedFeature = 'manage_event';
-                });
-                Navigator.pop(context);
-              },
+            // Dropdown for Event using ExpansionTile
+            ExpansionTile(
+              title: const Text('Event'),
+              leading: const Icon(Icons.event),
+              children: <Widget>[
+                ListTile(
+                  title: const Text('Manage Event'),
+                  onTap: () {
+                    setState(() {
+                      selectedFeature = 'manage_event';
+                    });
+                    Navigator.pop(context); // Close the drawer
+                  },
+                ),
+                ListTile(
+                  title: const Text('Event Page'),
+                  onTap: () {
+                    setState(() {
+                      selectedFeature = 'event_page';
+                    });
+                    Navigator.pop(context); // Close the drawer
+                  },
+                ),
+              ],
             ),
-            
             // Sign Out button moved outside of the ExpansionTile
             ListTile(
               title: const Text('Sign Out'),

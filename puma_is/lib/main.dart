@@ -19,7 +19,13 @@ class MyApp extends StatelessWidget {
       title: 'PUMA IS',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        brightness: Brightness.light, // Light theme
       ),
+      darkTheme: ThemeData(
+        primarySwatch: Colors.blueGrey,
+        brightness: Brightness.dark, // Dark theme
+      ),
+      themeMode: ThemeMode.system, // Follow the system theme (light or dark)
       home: const SplashScreen(), // Set SplashScreen as the initial screen
       routes: {
         '/signup': (context) => Signup(),
