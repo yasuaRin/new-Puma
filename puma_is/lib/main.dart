@@ -2,51 +2,53 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:puma_is/screens/Signup.dart';
-import 'package:puma_is/screens/home.dart'; // Import the home page
-import 'package:puma_is/screens/SignIn.dart'; // Import the sign-in page
-import 'package:puma_is/splash_screen.dart'; // Import the splash screen
+import 'package:puma_is/screens/home.dart';
+import 'package:puma_is/screens/SignIn.dart';
+import 'package:puma_is/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(); // Ensure Firebase is initialized
+  await Firebase.initializeApp();
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'PUMA IS',
       theme: ThemeData(
         primarySwatch: Colors.blue,
-        brightness: Brightness.light, // Light theme
+        brightness: Brightness.light,
       ),
       darkTheme: ThemeData(
         primarySwatch: Colors.blueGrey,
-        brightness: Brightness.dark, // Dark theme
+        brightness: Brightness.dark,
       ),
-      themeMode: ThemeMode.system, // Follow the system theme (light or dark)
-      home: const SplashScreen(), // Set SplashScreen as the initial screen
+      themeMode: ThemeMode.system,
+      home: const SplashScreen(),
       routes: {
-        '/signup': (context) => Signup(),
-        '/signin': (context) => SignIn(),
-        '/home': (context) => homePage(loggedInEmail: ''), // Adjust as needed
+        '/signup': (context) => const Signup(),
+        '/signin': (context) => const SignIn(),
+        '/home': (context) => const homePage(loggedInEmail: ''),
       },
     );
   }
 }
 
 class AuthChecker extends StatelessWidget {
+  const AuthChecker({super.key});
+
   @override
   Widget build(BuildContext context) {
-    // Check if the user is already signed in
     User? user = FirebaseAuth.instance.currentUser;
 
-    // If user is logged in, navigate to home screen, else sign-in screen
     if (user != null) {
-      return homePage(loggedInEmail: user.email!); // Pass logged-in user's email
+      return homePage(loggedInEmail: user.email!);
     } else {
-      return SignIn(); // Show sign-in screen if not logged in
+      return const SignIn();
     }
   }
 }

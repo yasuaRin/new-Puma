@@ -4,6 +4,8 @@ import 'package:puma_is/controllers/InfoController.dart';
 import 'package:puma_is/services/info_services.dart';
 
 class ManageInfoPage extends StatefulWidget {
+  const ManageInfoPage({super.key});
+
   @override
   _ManageInfoPageState createState() => _ManageInfoPageState();
 }
@@ -33,7 +35,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
         _contactPersonController.text.isEmpty ||
         _selectedDate == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please fill in all fields and select a date")),
+        const SnackBar(content: Text("Please fill in all fields and select a date")),
       );
       return;
     }
@@ -45,7 +47,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
         dateTime: _selectedDate!,
         contactPerson: _contactPersonController.text,
       );
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Info added successfully")));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Info added successfully")));
     } else {
       _infoController.updateInfo(
         infoId: infoId,
@@ -54,7 +56,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
         dateTime: _selectedDate!,
         contactPerson: _contactPersonController.text,
       );
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Info updated successfully")));
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Info updated successfully")));
     }
 
     // Clear fields and fetch updated info list
@@ -67,27 +69,27 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Confirm Deletion'),
-        content: Text('Are you sure you want to delete this info?'),
+        title: const Text('Confirm Deletion'),
+        content: const Text('Are you sure you want to delete this info?'),
         actions: [
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
             },
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () async {
               try {
                 await _infoController.deleteInfo(infoId);
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Info deleted successfully")));
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Info deleted successfully")));
                 _fetchInfo();
                 Navigator.of(context).pop();
               } catch (e) {
-                ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text("Error deleting info")));
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Error deleting info")));
               }
             },
-            child: Text('Delete'),
+            child: const Text('Delete'),
           ),
         ],
       ),
@@ -115,11 +117,11 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage Info'),
+        title: const Text('Manage Info'),
         backgroundColor: Colors.teal,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -130,18 +132,18 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
                     Text(
                       _selectedInfoId == null ? 'Add Info' : 'Update Info',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                         color: Colors.teal,
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     TextFormField(
                       controller: _titleController,
                       decoration: InputDecoration(
@@ -151,7 +153,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15),
                     TextFormField(
                       controller: _contentController,
                       decoration: InputDecoration(
@@ -161,7 +163,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15),
                     TextFormField(
                       controller: _contactPersonController,
                       decoration: InputDecoration(
@@ -171,7 +173,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                     ),
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15),
                     ElevatedButton(
                       onPressed: () async {
                         _selectedDate = await showDatePicker(
@@ -181,29 +183,29 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                           lastDate: DateTime(2100),
                         );
                       },
-                      child: Text("Pick Date"),
+                      child: const Text("Pick Date"),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         _handleInfoAction(infoId: _selectedInfoId);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.teal,
-                        padding: EdgeInsets.symmetric(vertical: 15),
+                        padding: const EdgeInsets.symmetric(vertical: 15),
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                       ),
                       child: Text(
                         _selectedInfoId == null ? 'Add Info' : 'Update Info',
-                        style: TextStyle(color: Colors.white),
+                        style: const TextStyle(color: Colors.white),
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 30),
-            Text(
+            const SizedBox(height: 30),
+            const Text(
               'Info List',
               style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.teal),
             ),
@@ -219,7 +221,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.edit, color: Colors.teal),
+                        icon: const Icon(Icons.edit, color: Colors.teal),
                         onPressed: () {
                           _titleController.text = info['title'];
                           _contentController.text = info['content'];
@@ -231,7 +233,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
+                        icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () {
                           _deleteInfo(info.id);
                         },

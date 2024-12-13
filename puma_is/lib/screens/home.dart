@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:puma_is/screens/vote.dart';
+import 'package:puma_is/screens/member.dart';
 import 'package:puma_is/screens/info.dart';
 import 'package:puma_is/screens/signin.dart';
 import 'package:puma_is/screens/event.dart';
@@ -7,7 +7,7 @@ import 'package:puma_is/screens/event.dart';
 class homePage extends StatefulWidget {
   final String loggedInEmail;
 
-  const homePage({Key? key, required this.loggedInEmail}) : super(key: key);
+  const homePage({super.key, required this.loggedInEmail});
 
   @override
   State<homePage> createState() => _homePageState();
@@ -50,24 +50,30 @@ class _homePageState extends State<homePage> {
 
   // Data for Q&A
   final List<Map<String, String>> questions = [
-    {'question': 'What is Puma IS?', 'answer': 'Puma IS is a student organization focusing on IS development.'},
-    {'question': 'How can I join?', 'answer': 'You can join by registering on our website or contacting us directly.'},
-    {'question': 'What events do you organize?', 'answer': 'We organize tech workshops, hackathons, and networking events.'},
-  ];
+  {'question': 'How can I join?', 'answer': 'You can join by registering on our website or contacting us directly.'},
+  {'question': 'What events do you organize?', 'answer': 'We organize tech workshops, hackathons, and networking events.'},
+  {'question': 'When can I join the Puma registration?', 'answer': 'Wait for the next event or stay tuned in this application in the information section.'},
+  {'question': 'Do I need prior experience to join?', 'answer': 'No prior experience is required. We welcome all students interested in IS development.'},
+  {'question': 'Is there a membership fee?', 'answer': 'No, joining Puma IS is free for all students.'},
+  {'question': 'What skills can I gain by joining Puma IS?', 'answer': 'You can gain technical, organizational, and networking skills through workshops and events.'},
+  {'question': 'Can I participate in Puma events as a non-member?', 'answer': 'Yes, most of our events are open to everyone, even if you are not a member.'},
+];
 
   // Widget that returns different pages based on the selected feature
   Widget buildBody() {
     switch (selectedFeature) {
-      case 'vote':
-        return const VotePage(); // Use the VotePage from vote.dart
+      // case 'vote':
+      //   return const VotePage(); // Use the VotePage from vote.dart
       case 'info':
         return InfoPage(); // Show InfoPage when selectedFeature is 'info'
       case 'events':
-        return EventPage(); // Show EventsPage when selectedFeature is 'events'
+        return EventPage();
+         case 'member':
+        return MemberPage(); 
       default:
         return Container(
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
               colors: [Color(0xffB3C8CF), Color(0xffFFE3E3)],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -104,7 +110,7 @@ class _homePageState extends State<homePage> {
                         const SizedBox(height: 20),
                         Text(
                           'Hello, $username!',
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
                             color: Colors.black,
@@ -114,24 +120,24 @@ class _homePageState extends State<homePage> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  // Latest Information Section
+                  // Latest Information Section (without button)
                   Container(
                     padding: const EdgeInsets.all(15.0),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: Colors.black26,
                           blurRadius: 5,
-                          offset: const Offset(0, 3),
+                          offset: Offset(0, 3),
                         ),
                       ],
                     ),
                     child: Column(
                       children: <Widget>[
-                        Text(
-                          'Latest Information',
+                        const Text(
+                          'About PUMA IS',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
@@ -140,35 +146,11 @@ class _homePageState extends State<homePage> {
                         ),
                         const SizedBox(height: 10),
                         Text(
-                          'Stay updated with the latest news and updates. Check out upcoming events, vote for chairperson, and attend info sessions!',
+                          'Puma IS (President University Major Association Information System) is a student organization at President University that focuses on Information Systems (IS) development and related activities. The organization serves as a platform for students to enhance their skills in areas such as technology, management, and system development. Puma IS organizes various events, including workshops, hackathons, networking sessions, and other tech-related activities to help students build their knowledge and prepare for careers in the information systems field. It is also a community where students can collaborate, learn, and engage with industry professionals.',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 16,
                             color: Colors.grey.shade700,
-                          ),
-                        ),
-                        const SizedBox(height: 20),
-                        ElevatedButton(
-                          onPressed: () {
-                            setState(() {
-                              selectedFeature = 'events'; // Navigate to the events page
-                            });
-                            Navigator.pop(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.blueGrey.shade800,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 15, horizontal: 30),
-                          ),
-                          child: const Text(
-                            'See Events',
-                            style: TextStyle(
-                              fontSize: 18,
-                              color: Colors.white,
-                            ),
                           ),
                         ),
                       ],
@@ -181,11 +163,11 @@ class _homePageState extends State<homePage> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: Colors.black26,
                           blurRadius: 5,
-                          offset: const Offset(0, 3),
+                          offset: Offset(0, 3),
                         ),
                       ],
                     ),
@@ -193,7 +175,7 @@ class _homePageState extends State<homePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Centered title for PUMA IS Members
-                        Center(
+                        const Center(
                           child: Text(
                             'PUMA IS Members 2024',
                             style: TextStyle(
@@ -259,11 +241,11 @@ class _homePageState extends State<homePage> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: Colors.black26,
                           blurRadius: 5,
-                          offset: const Offset(0, 3),
+                          offset: Offset(0, 3),
                         ),
                       ],
                     ),
@@ -271,7 +253,7 @@ class _homePageState extends State<homePage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Centered title for FAQ
-                        Center(
+                        const Center(
                           child: Text(
                             'FAQ',
                             style: TextStyle(
@@ -292,7 +274,7 @@ class _homePageState extends State<homePage> {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
                                     questionData['answer']!,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Colors.black, // Set the answer text color
                                     ),
                                   ),
@@ -348,7 +330,7 @@ class _homePageState extends State<homePage> {
                   const SizedBox(height: 10),
                   Text(
                     'Hello, $username',
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
@@ -356,7 +338,7 @@ class _homePageState extends State<homePage> {
                   ),
                   Text(
                     loggedInEmail,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
                 ],
               ),
@@ -372,6 +354,26 @@ class _homePageState extends State<homePage> {
               },
             ),
             ListTile(
+              leading: const Icon(Icons.how_to_vote),
+              title: const Text('Member'),
+              onTap: () {
+                setState(() {
+                  selectedFeature = 'member';
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: const Icon(Icons.info),
+              title: const Text('Information'),
+              onTap: () {
+                setState(() {
+                  selectedFeature = 'info';
+                });
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
               leading: const Icon(Icons.event),
               title: const Text('Events'),
               onTap: () {
@@ -381,16 +383,7 @@ class _homePageState extends State<homePage> {
                 Navigator.pop(context);
               },
             ),
-            ListTile(
-              leading: const Icon(Icons.question_answer),
-              title: const Text('FAQ'),
-              onTap: () {
-                setState(() {
-                  selectedFeature = 'info';
-                });
-                Navigator.pop(context);
-              },
-            ),
+            // Logout Button
             ListTile(
               leading: const Icon(Icons.logout),
               title: const Text('Logout'),

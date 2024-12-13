@@ -11,7 +11,8 @@ class EventServices {
     required String description,
     required String location,
     required String status,
-    required DateTime dateTime,
+    required String date,
+    required String cp,
   }) {
     return _eventCollection.add({
       'event_ID': event_ID,
@@ -19,7 +20,8 @@ class EventServices {
       'description': description,
       'location': location,
       'Status': status,
-      'dateTime': dateTime,
+      'date': date,
+      'cp': cp,
     });
   }
 
@@ -30,7 +32,8 @@ class EventServices {
     required String description,
     required String location,
     required String status,
-    required DateTime dateTime,
+    required String date,
+    required String cp,
   }) {
     return _eventCollection.doc(event_ID).update({
       'event_ID': event_ID,
@@ -38,13 +41,14 @@ class EventServices {
       'description': description,
       'location': location,
       'Status': status,
-      'dateTime': dateTime,
+      'date': date,
+      'cp': cp,
     });
   }
 
   // Delete event
-  Future<void> deleteEvent(String event_ID) {
-    return _eventCollection.doc(event_ID).delete();
+  Future<void> deleteEvent(String eventId) {
+    return _eventCollection.doc(eventId).delete();
   }
 
   // Fetch all events

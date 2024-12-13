@@ -20,6 +20,8 @@ class SplashScreen extends StatelessWidget {
 }
 
 class SplashContent extends StatefulWidget {
+  const SplashContent({super.key});
+
   @override
   _SplashContentState createState() => _SplashContentState();
 }
@@ -66,6 +68,8 @@ class _SplashContentState extends State<SplashContent> {
 }
 
 class AuthChecker extends StatelessWidget {
+  const AuthChecker({super.key});
+
   @override
   Widget build(BuildContext context) {
     // Check if the user is already signed in
@@ -75,7 +79,7 @@ class AuthChecker extends StatelessWidget {
     if (user != null) {
       return homePage(loggedInEmail: user.email!); // Pass logged-in user's email
     } else {
-      return SignIn(); // Show sign-in screen if not logged in
+      return const SignIn(); // Show sign-in screen if not logged in
     }
   }
 }

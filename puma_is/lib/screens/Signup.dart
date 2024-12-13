@@ -1,8 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'Signin.dart'; // Import the SignIn page
 
 class Signup extends StatefulWidget {
-  const Signup({Key? key}) : super(key: key);
+  const Signup({super.key});
 
   @override
   State<Signup> createState() => _SignupState();
@@ -17,11 +18,30 @@ class _SignupState extends State<Signup> {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
 
-  void onSignUpPressed() {
+  // Firebase Authentication instance
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  // SignUp function
+  Future<void> onSignUpPressed() async {
     if (_formKey.currentState?.validate() ?? false) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Signup successful!')),
-      );
+      try {
+        // Create the user with email and password
+        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+          email: emailOrPhone,
+          password: password,
+        );
+        // If sign-up is successful, show a success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Signup successful!')),
+        );
+        // You can also navigate to another screen (e.g., Home screen)
+      } on FirebaseAuthException catch (e) {
+        // Handle error messages from Firebase
+        String message = e.message ?? 'An error occurred';
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(message)),
+        );
+      }
     }
   }
 
@@ -29,7 +49,7 @@ class _SignupState extends State<Signup> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        decoration: BoxDecoration(
+        decoration: const BoxDecoration(
           gradient: LinearGradient(
             colors: [Color(0xffB3C8CF), Color(0xffFFE3E3)],
             begin: Alignment.topCenter,
@@ -38,18 +58,18 @@ class _SignupState extends State<Signup> {
         ),
         child: Stack(
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 60.0, left: 22, right: 22),
+            const Padding(
+              padding: EdgeInsets.only(top: 60.0, left: 22, right: 22),
               child: Column(
                 children: [
-                  const Center(
+                  Center(
                     child: Image(
                       image: AssetImage('assets/images/logonew.png'),
                       height: 100,
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  const Center(
+                  SizedBox(height: 20),
+                  Center(
                     child: Text(
                       'Stay Connected and Stay Informed!',
                       textAlign: TextAlign.center,
@@ -246,9 +266,9 @@ class _SignupState extends State<Signup> {
                               ),
                             );
                           },
-                          child: Center(
+                          child: const Center(
                             child: Column(
-                              children: const [
+                              children: [
                                 Text(
                                   "Already have an account?",
                                   style: TextStyle(

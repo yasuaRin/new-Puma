@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ManageEventPage extends StatefulWidget {
+  const ManageEventPage({super.key});
+
   @override
   _ManageEventPageState createState() => _ManageEventPageState();
 }
@@ -12,7 +14,8 @@ class _ManageEventPageState extends State<ManageEventPage> {
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _locationController = TextEditingController();
   final TextEditingController _statusController = TextEditingController();
-  DateTime? _selectedDate;
+  final TextEditingController _dateController = TextEditingController();
+  final TextEditingController _cpController = TextEditingController();
 
   List<DocumentSnapshot> _eventList = [];
   String? _selectedEvent_ID;
@@ -32,12 +35,15 @@ class _ManageEventPageState extends State<ManageEventPage> {
         _descriptionController.text.isEmpty ||
         _locationController.text.isEmpty ||
         _statusController.text.isEmpty ||
-        _selectedDate == null) {
+        _dateController.text.isEmpty ||
+        _cpController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Please fill in all fields and select a date")),
+        const SnackBar(content: Text("Please fill in all fields and select a date")),
       );
       return;
     }
+
+    String eventDate = _dateController.text;
 
     Map<String, dynamic> eventData = {
       'event_ID': _event_IDController.text,
@@ -45,7 +51,8 @@ class _ManageEventPageState extends State<ManageEventPage> {
       'description': _descriptionController.text,
       'location': _locationController.text,
       'Status': _statusController.text,
-      'date': _selectedDate,
+      'date': eventDate,
+      'cp': _cpController.text,
     };
 
     try {
@@ -53,15 +60,15 @@ class _ManageEventPageState extends State<ManageEventPage> {
         // Add Event
         await FirebaseFirestore.instance.collection('events').add(eventData);
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Event added successfully")));
+            .showSnackBar(const SnackBar(content: Text("Event added successfully")));
       } else {
         // Update Event
         await FirebaseFirestore.instance
             .collection('events')
             .doc(event_ID)
             .update(eventData);
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Event updated successfully")));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Event updated successfully")));
       }
       _clearFields();
       _fetchEvent();
@@ -72,20 +79,20 @@ class _ManageEventPageState extends State<ManageEventPage> {
   }
 
   // Delete Event with Confirmation
-  void _deleteEvent(String event_ID) async {
+  void _deleteEvent(String eventId) async {
     bool confirm = await showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('Confirm Deletion'),
-        content: Text('Are you sure you want to delete this event?'),
+        title: const Text('Confirm Deletion'),
+        content: const Text('Are you sure you want to delete this event?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(false),
-            child: Text('Cancel'),
+            child: const Text('Cancel'),
           ),
           TextButton(
             onPressed: () => Navigator.of(context).pop(true),
-            child: Text('Delete'),
+            child: const Text('Delete'),
           ),
         ],
       ),
@@ -95,10 +102,10 @@ class _ManageEventPageState extends State<ManageEventPage> {
       try {
         await FirebaseFirestore.instance
             .collection('events')
-            .doc(event_ID)
+            .doc(eventId)
             .delete();
-        ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text("Event deleted successfully")));
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text("Event deleted successfully")));
         _fetchEvent();
       } catch (e) {
         ScaffoldMessenger.of(context)
@@ -114,8 +121,9 @@ class _ManageEventPageState extends State<ManageEventPage> {
     _descriptionController.clear();
     _locationController.clear();
     _statusController.clear();
+    _dateController.clear();
+    _cpController.clear();
     setState(() {
-      _selectedDate = null;
       _selectedEvent_ID = null;
     });
   }
@@ -130,11 +138,11 @@ class _ManageEventPageState extends State<ManageEventPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage Event'),
+        title: const Text('Manage Event'),
         backgroundColor: Colors.teal,
       ),
       body: SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -145,73 +153,72 @@ class _ManageEventPageState extends State<ManageEventPage> {
                 borderRadius: BorderRadius.circular(15),
               ),
               child: Padding(
-                padding: EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
                     Text(
                       _selectedEvent_ID == null ? 'Add Event' : 'Update Event',
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                         color: Colors.teal,
                       ),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     TextFormField(
                       controller: _event_IDController,
-                      decoration: InputDecoration(labelText: 'Event_ID'),
+                      decoration: const InputDecoration(labelText: 'Event_ID'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     TextFormField(
                       controller: _titleController,
-                      decoration: InputDecoration(labelText: 'Title'),
+                      decoration: const InputDecoration(labelText: 'Title'),
                     ),
-                   
-                    SizedBox(height: 15),
+                    const SizedBox(height: 15),
                     TextFormField(
                       controller: _descriptionController,
-                      decoration: InputDecoration(labelText: 'Description'),
+                      decoration: const InputDecoration(labelText: 'Description'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     TextFormField(
                       controller: _locationController,
-                      decoration: InputDecoration(labelText: 'Location'),
+                      decoration: const InputDecoration(labelText: 'Location'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     TextFormField(
                       controller: _statusController,
-                      decoration: InputDecoration(labelText: 'Status'),
+                      decoration: const InputDecoration(labelText: 'Status'),
                     ),
-                    SizedBox(height: 15),
-                    ElevatedButton(
-                      onPressed: () async {
-                        _selectedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2100),
-                        );
-                      },
-                      child: Text("Pick Date"),
+                    const SizedBox(height: 15),
+                    TextFormField(
+                      controller: _cpController,
+                      decoration: const InputDecoration(labelText: 'cp'),
                     ),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 15),
+                    TextFormField(
+                      controller: _dateController,
+                      decoration:
+                          const InputDecoration(labelText: 'Date (YYYY-MM-DD)'),
+                    ),
+                    const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         _handleEventAction(event_ID: _selectedEvent_ID);
                       },
-                      style: ElevatedButton.styleFrom(backgroundColor: Colors.teal),
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.teal),
                       child: Text(
                         _selectedEvent_ID == null
                             ? 'Add Event'
-                            : 'Update Event',
+                            : 'Update Event', // This will display "Update Event" when editing an event
                       ),
                     ),
                   ],
                 ),
               ),
             ),
-            SizedBox(height: 30),
-            Text(
+            const SizedBox(height: 30),
+            const Text(
               'Event List',
               style: TextStyle(
                 fontSize: 22,
@@ -231,22 +238,23 @@ class _ManageEventPageState extends State<ManageEventPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       IconButton(
-                        icon: Icon(Icons.edit, color: Colors.teal),
+                        icon: const Icon(Icons.edit, color: Colors.teal),
                         onPressed: () {
                           _event_IDController.text = event['event_ID'];
                           _titleController.text = event['title'];
                           _descriptionController.text = event['description'];
                           _locationController.text = event['location'];
                           _statusController.text = event['Status'];
+                          _cpController.text = event['cp'];
+                          _dateController.text =
+                              event['date']; // Directly use the date string
                           setState(() {
-                            _selectedDate =
-                                (event['date'] as Timestamp).toDate();
                             _selectedEvent_ID = event.id;
                           });
                         },
                       ),
                       IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
+                        icon: const Icon(Icons.delete, color: Colors.red),
                         onPressed: () {
                           _deleteEvent(event.id);
                         },

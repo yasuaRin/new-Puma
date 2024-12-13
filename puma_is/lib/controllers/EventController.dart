@@ -10,7 +10,8 @@ class EventController {
     required String description,
     required String location,
     required String status,
-    required DateTime dateTime,
+    required String date,
+    required String cp,
   }) {
     return _eventServices.addEvent(
       event_ID: event_ID,
@@ -18,7 +19,8 @@ class EventController {
       description: description,
       location: location,
       status: status,
-      dateTime: dateTime,
+      date: date,
+      cp: cp,
     );
   }
 
@@ -29,7 +31,8 @@ class EventController {
     required String description,
     required String location,
     required String status,
-    required DateTime dateTime,
+    required String date,
+    required String cp,
   }) {
     return _eventServices.updateEvent(
       event_ID: event_ID,
@@ -37,7 +40,8 @@ class EventController {
       description: description,
       location: location,
       status: status,
-      dateTime: dateTime,
+      date: date,
+      cp: cp,
     );
   }
 

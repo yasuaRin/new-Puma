@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Firebase Auth
-import 'package:puma_is/screens/Admin_Dashboard.dart'; // Admin Dashboard
+import 'package:puma_is/screens/admin/Admin_Dashboard.dart';
 import 'package:puma_is/screens/home.dart'; // Home Page
 import 'Signup.dart'; // Signup Page
 
@@ -50,20 +50,49 @@ class SignInState extends State<SignIn> {
       );
     } else {
       // Firebase authentication for regular users
+      if (!_validateEmail(email)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Please enter a valid email address')),
+        );
+        return;
+      }
+
+      if (!_validatePassword(password)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Password should be at least 6 characters')),
+        );
+        return;
+      }
+
       try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(
+        // Firebase sign-in
+        UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
+        
+        // If the login is successful, navigate to the home page
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const homePage(loggedInEmail: '')),
+          MaterialPageRoute(builder: (context) => homePage(loggedInEmail: email)),
         );
-      } catch (e) {
-        // Show error message if login fails
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Error signing in: $e')),
-        );
+      } on FirebaseAuthException catch (e) {
+        if (e.code == 'user-not-found') {
+          // User not found error
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('No account found. Please create an account.')),
+          );
+        } else if (e.code == 'wrong-password') {
+          // Wrong password error
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Incorrect password. Please try again.')),
+          );
+        } else {
+          // Other Firebase authentication errors
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Error signing in: ${e.message}')),
+          );
+        }
       }
     }
   }
@@ -91,30 +120,29 @@ class SignInState extends State<SignIn> {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.only(top: 60.0, left: 22, right: 22),
+          const Padding(
+            padding: EdgeInsets.only(top: 60.0, left: 22, right: 22),
             child: Column(
               children: [
-  Center(
-    child: const Image(
-      image: AssetImage('assets/images/logonew.png'),
-      height: 100,
-    ),
-  ),
-  const SizedBox(height: 20),
-  const Center(
-    child: Text(
-      'Stay Connected and Stay Informed!',
-      textAlign: TextAlign.center,
-      style: TextStyle(
-        fontSize: 20,
-        color: Color.fromRGBO(255, 255, 255, 0.7),
-        fontWeight: FontWeight.bold,
-      ),
-    ),
-  ),
-],
-
+                Center(
+                  child: Image(
+                    image: AssetImage('assets/images/logonew.png'),
+                    height: 100,
+                  ),
+                ),
+                SizedBox(height: 20),
+                Center(
+                  child: Text(
+                    'Stay Connected and Stay Informed!',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Color.fromRGBO(255, 255, 255, 0.7),
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Padding(
