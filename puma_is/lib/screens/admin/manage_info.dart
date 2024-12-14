@@ -20,6 +20,8 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
   List<DocumentSnapshot> _infoList = []; // List to store info from Firebase
   String? _selectedInfoId; // Track selected info for update
 
+  final ScrollController _scrollController = ScrollController(); // Scroll controller
+
   // Fetch Info from Firebase
   void _fetchInfo() async {
     var info = await FirebaseFirestore.instance.collection('info').get();
@@ -114,137 +116,180 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
   }
 
   @override
+  void dispose() {
+    _scrollController.dispose(); // Dispose of the scroll controller when the page is disposed
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Manage Info'),
         backgroundColor: Colors.teal,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Info Management Card
-            Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Text(
-                      _selectedInfoId == null ? 'Add Info' : 'Update Info',
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.teal,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _titleController,
-                      decoration: InputDecoration(
-                        labelText: 'Title',
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    TextFormField(
-                      controller: _contentController,
-                      decoration: InputDecoration(
-                        labelText: 'Content',
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    TextFormField(
-                      controller: _contactPersonController,
-                      decoration: InputDecoration(
-                        labelText: 'Contact Person',
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    ElevatedButton(
-                      onPressed: () async {
-                        _selectedDate = await showDatePicker(
-                          context: context,
-                          initialDate: DateTime.now(),
-                          firstDate: DateTime(2000),
-                          lastDate: DateTime(2100),
-                        );
-                      },
-                      child: const Text("Pick Date"),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        _handleInfoAction(infoId: _selectedInfoId);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
-                      child: Text(
-                        _selectedInfoId == null ? 'Add Info' : 'Update Info',
-                        style: const TextStyle(color: Colors.white),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 30),
-            const Text(
-              'Info List',
-              style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.teal),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: _infoList.length,
-              itemBuilder: (context, index) {
-                var info = _infoList[index];
-                return ListTile(
-                  title: Text(info['title']),
-                  subtitle: Text(info['contactPerson']),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.teal),
-                        onPressed: () {
-                          _titleController.text = info['title'];
-                          _contentController.text = info['content'];
-                          _contactPersonController.text = info['contactPerson'];
-                          setState(() {
-                            _selectedDate = (info['dateTime'] as Timestamp).toDate();
-                            _selectedInfoId = info.id;
-                          });
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          _deleteInfo(info.id);
-                        },
-                      ),
-                    ],
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            controller: _scrollController, // Attach scroll controller
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Info Management Card
+                Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                );
-              },
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          _selectedInfoId == null ? 'Add Info' : 'Update Info',
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.teal,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: _titleController,
+                          decoration: InputDecoration(
+                            labelText: 'Title',
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        TextFormField(
+                          controller: _contentController,
+                          decoration: InputDecoration(
+                            labelText: 'Content',
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        TextFormField(
+                          controller: _contactPersonController,
+                          decoration: InputDecoration(
+                            labelText: 'Contact Person',
+                            filled: true,
+                            fillColor: Colors.grey[200],
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                        ),
+                        const SizedBox(height: 15),
+                        ElevatedButton(
+                          onPressed: () async {
+                            _selectedDate = await showDatePicker(
+                              context: context,
+                              initialDate: DateTime.now(),
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2100),
+                            );
+                          },
+                          child: const Text("Pick Date"),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            _handleInfoAction(infoId: _selectedInfoId);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.teal,
+                            padding: const EdgeInsets.symmetric(vertical: 15),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                          ),
+                          child: Text(
+                            _selectedInfoId == null ? 'Add Info' : 'Update Info',
+                            style: const TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                const Text(
+                  'Info List',
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.teal),
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _infoList.length,
+                  itemBuilder: (context, index) {
+                    var info = _infoList[index];
+                    return ListTile(
+                      title: Text(info['title']),
+                      subtitle: Text(info['contactPerson']),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.teal),
+                            onPressed: () {
+                              _titleController.text = info['title'];
+                              _contentController.text = info['content'];
+                              _contactPersonController.text = info['contactPerson'];
+                              setState(() {
+                                _selectedDate = (info['dateTime'] as Timestamp).toDate();
+                                _selectedInfoId = info.id;
+                              });
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              _deleteInfo(info.id);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                FloatingActionButton(
+                  onPressed: () {
+                    _scrollController.animateTo(
+                      _scrollController.position.minScrollExtent,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                  child: const Icon(Icons.arrow_upward),
+                  backgroundColor: Colors.teal,
+                ),
+                const SizedBox(height: 10),
+                FloatingActionButton(
+                  onPressed: () {
+                    _scrollController.animateTo(
+                      _scrollController.position.maxScrollExtent,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                  child: const Icon(Icons.arrow_downward),
+                  backgroundColor: Colors.teal,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

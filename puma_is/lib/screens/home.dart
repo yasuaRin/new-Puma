@@ -22,32 +22,6 @@ class _homePageState extends State<homePage> {
     return loggedInEmail.split('@')[0];
   }
 
-  // Data for members
-  final List<Map<String, String>> leadership = [
-    {'name': 'Alice Johnson', 'role': 'Chairperson', 'image': 'assets/leader1.png'},
-    {'name': 'Bob Smith', 'role': 'Vice Chairperson', 'image': 'assets/leader2.png'},
-  ];
-
-  final List<Map<String, String>> secretary = [
-    {'name': 'Catherine Lee', 'role': 'Secretary', 'image': 'assets/secretary.png'},
-  ];
-
-  final List<Map<String, String>> treasurer = [
-    {'name': 'David Brown', 'role': 'Treasurer', 'image': 'assets/treasurer.png'},
-  ];
-
-  final List<Map<String, String>> marketing = [
-    {'name': 'Eve White', 'role': 'Marketing', 'image': 'assets/marketing.png'},
-  ];
-
-  final List<Map<String, String>> development = [
-    {'name': 'Frank Green', 'role': 'Development', 'image': 'assets/development.png'},
-  ];
-
-  final List<Map<String, String>> design = [
-    {'name': 'Grace Black', 'role': 'Design', 'image': 'assets/design.png'},
-  ];
-
   // Data for Q&A
   final List<Map<String, String>> questions = [
   {'question': 'How can I join?', 'answer': 'You can join by registering on our website or contacting us directly.'},
@@ -158,82 +132,6 @@ class _homePageState extends State<homePage> {
                   ),
                   const SizedBox(height: 20),
                   // Our PUMA IS Members Section
-                  Container(
-                    padding: const EdgeInsets.all(15.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Centered title for PUMA IS Members
-                        const Center(
-                          child: Text(
-                            'PUMA IS Members 2024',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        // Leadership section
-                        Text(
-                          'Leadership',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blueGrey.shade900,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Column(
-                          children: leadership.map((member) {
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundImage: AssetImage(member['image']!),
-                              ),
-                              title: Text(member['name']!),
-                              subtitle: Text(member['role']!),
-                            );
-                          }).toList(),
-                        ),
-                        const Divider(),
-                        // Secretary section
-                        Text(
-                          'Secretary',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.blueGrey.shade900,
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Column(
-                          children: secretary.map((member) {
-                            return ListTile(
-                              leading: CircleAvatar(
-                                backgroundImage: AssetImage(member['image']!),
-                              ),
-                              title: Text(member['name']!),
-                              subtitle: Text(member['role']!),
-                            );
-                          }).toList(),
-                        ),
-                        const Divider(),
-                        // Other sections follow the same pattern...
-                      ],
-                    ),
-                  ),
                   const SizedBox(height: 30),
                   // Q&A Section
                   Container(

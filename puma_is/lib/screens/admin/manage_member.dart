@@ -14,9 +14,11 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _batchController = TextEditingController();
   final TextEditingController _positionController = TextEditingController();
+  final TextEditingController _divisionController = TextEditingController();
 
   List<DocumentSnapshot> _memberList = [];
   String? _selectedMemberId;
+  final ScrollController _scrollController = ScrollController(); // Scroll controller
 
   @override
   void initState() {
@@ -34,7 +36,8 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
   void _handleMemberAction({String? memberId}) async {
     if (_fullNameController.text.isEmpty ||
         _batchController.text.isEmpty ||
-        _positionController.text.isEmpty) {
+        _positionController.text.isEmpty ||
+        _divisionController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please fill in all fields")),
       );
@@ -55,6 +58,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
         fullName: _fullNameController.text,
         batch: batch,
         position: _positionController.text,
+        division: _divisionController.text,
       );
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Member created successfully")),
@@ -65,6 +69,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
         fullName: _fullNameController.text,
         batch: batch,
         position: _positionController.text,
+        division: _divisionController.text,
       );
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Member updated successfully")),
@@ -106,6 +111,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
     _fullNameController.clear();
     _batchController.clear();
     _positionController.clear();
+    _divisionController.clear();
     setState(() {
       _selectedMemberId = null;
     });
@@ -119,6 +125,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
         backgroundColor: Colors.teal,
       ),
       body: SingleChildScrollView(
+        controller: _scrollController, // Scroll controller for body
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -133,7 +140,9 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                 child: Column(
                   children: [
                     Text(
-                      _selectedMemberId == null ? 'Add Member' : 'Update Member',
+                      _selectedMemberId == null
+                          ? 'Add Member'
+                          : 'Update Member',
                       style: const TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
@@ -177,6 +186,18 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                         ),
                       ),
                     ),
+                    const SizedBox(height: 15),
+                    TextFormField(
+                      controller: _divisionController,
+                      decoration: InputDecoration(
+                        labelText: 'Division',
+                        filled: true,
+                        fillColor: Colors.grey[200],
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                    ),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
@@ -190,7 +211,9 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                         ),
                       ),
                       child: Text(
-                        _selectedMemberId == null ? 'Add Member' : 'Update Member',
+                        _selectedMemberId == null
+                            ? 'Add Member'
+                            : 'Update Member',
                         style: const TextStyle(
                           fontSize: 16,
                           color: Colors.white,
@@ -217,7 +240,8 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                 var member = _memberList[index];
                 return ListTile(
                   title: Text(member['fullName']),
-                  subtitle: Text('Batch: ${member['batch']}'),
+                  subtitle: Text(
+                      'Batch: ${member['batch']}, Division: ${member['division']}'),
                   trailing: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -229,6 +253,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                             _fullNameController.text = member['fullName'];
                             _batchController.text = member['batch'].toString();
                             _positionController.text = member['position'];
+                            _divisionController.text = member['division'];
                           });
                         },
                       ),
@@ -243,6 +268,34 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              _scrollController.animateTo(
+                0, // Scroll to top
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            },
+            backgroundColor: Colors.teal,
+            child: const Icon(Icons.arrow_upward),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: () {
+              _scrollController.animateTo(
+                _scrollController.position.maxScrollExtent, // Scroll to bottom
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            },
+            backgroundColor: Colors.teal,
+            child: const Icon(Icons.arrow_downward),
+          ),
+        ],
       ),
     );
   }

@@ -36,14 +36,26 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/images/candidates-1.jpg
-    - assets/images/candidates-2.jpg
+  
+    - assets/images/johndoe.jpg
+    - assets/images/alexjohnson.jpg
+    - assets/images/janesmith.jpg
+    - assets/images/jackwanson.jpg
+    - assets/images/jessicalout.jpg
+    - assets/images/bobracky.jpg
+    - assets/images/saskyrachellyn.jpg
+    - assets/images/georgesimanjuntak.jpg
+    - assets/images/rogerzhu.jpg
+    - assets/images/callystakenny.jpg
+    - assets/images/jeremyahferguson.jpg
+    - assets/images/lilyblossom.jpeg
+    - assets/images/kenny.jpeg
+    - assets/images/jackywiteen.jpeg
     - assets/images/PUMA_IS_BG.jpg
     - assets/images/logo.png
     - assets/images/temuAlumni.jpeg
     - assets/images/profile_pic.png
     - assets/images/cp.jpg
-    - assets/images/johndoe.jpg
     - assets/images/logonew.png
     - assets/images/hackathon.jpg
     - assets/images/StudyCom.jpg

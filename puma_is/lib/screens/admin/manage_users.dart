@@ -22,9 +22,14 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
   List<DocumentSnapshot> _userList = []; // List to store users from Firebase
   String? _selectedUserId; // Track selected user for update
 
-  // Fetch Users from Firebase
+  final ScrollController _scrollController = ScrollController(); // ScrollController for managing scroll position
+
+  // Fetch Users from Firebase and order by fullName
   void _fetchUsers() async {
-    var users = await FirebaseFirestore.instance.collection('user').get();
+    var users = await FirebaseFirestore.instance
+        .collection('user')
+        .orderBy('fullName') // Sort users by fullName
+        .get();
     setState(() {
       _userList = users.docs;
     });
@@ -40,6 +45,14 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
         _termsCondition == false) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please fill in all fields and agree to terms")),
+      );
+      return;
+    }
+
+    // Password strength validation (e.g., at least 8 characters, one special character)
+    if (_passwordController.text.length < 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Password must be at least 8 characters long")),
       );
       return;
     }
@@ -142,6 +155,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
         backgroundColor: Colors.teal,
       ),
       body: SingleChildScrollView(
+        controller: _scrollController, // Attach the ScrollController
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -326,6 +340,36 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
             ),
           ],
         ),
+      ),
+      // Floating Action Buttons
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              _scrollController.animateTo(
+                0.0,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+              );
+            },
+            child: const Icon(Icons.arrow_upward),
+            backgroundColor: Colors.teal,
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: () {
+              _scrollController.animateTo(
+                _scrollController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 500),
+                curve: Curves.easeInOut,
+              );
+            },
+            child: const Icon(Icons.arrow_downward),
+            backgroundColor: Colors.teal,
+          ),
+        ],
       ),
     );
   }

@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:puma_is/screens/admin/manage_event.dart';
+import 'package:puma_is/screens/admin/manage_member.dart';
 import 'package:puma_is/screens/admin/manage_info.dart';
 import 'package:puma_is/screens/admin/manage_users.dart';
+import 'package:puma_is/screens/admin/manage_event.dart';
+
 
 class AdminHome extends StatefulWidget {
   const AdminHome({super.key});
@@ -73,16 +75,16 @@ class _AdminHomeState extends State<AdminHome> {
                       },
                     ),
                     _buildCard(
-                      title: 'Total Voters',
+                      title: 'Total Member',
                       stream: FirebaseFirestore.instance
-                          .collection('votes')
+                          .collection('Members')
                           .snapshots()
                           .map((snapshot) => snapshot.docs.length),
                       onTap: () {
-                        // Navigator.push(
-                        //   context,
-                        //   MaterialPageRoute(builder: (context) => const ManageVotingPage()),
-                        // );
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (context) => const ManageMemberPage()),
+                        );
                       },
                     ),
                   ],

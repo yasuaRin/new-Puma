@@ -19,6 +19,7 @@ class _ManageEventPageState extends State<ManageEventPage> {
 
   List<DocumentSnapshot> _eventList = [];
   String? _selectedEvent_ID;
+  final ScrollController _scrollController = ScrollController(); // Scroll controller
 
   // Fetch Events from Firebase
   void _fetchEvent() async {
@@ -141,131 +142,168 @@ class _ManageEventPageState extends State<ManageEventPage> {
         title: const Text('Manage Event'),
         backgroundColor: Colors.teal,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            // Card with form fields
-            Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Text(
-                      _selectedEvent_ID == null ? 'Add Event' : 'Update Event',
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.teal,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _event_IDController,
-                      decoration: const InputDecoration(labelText: 'Event_ID'),
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _titleController,
-                      decoration: const InputDecoration(labelText: 'Title'),
-                    ),
-                    const SizedBox(height: 15),
-                    TextFormField(
-                      controller: _descriptionController,
-                      decoration: const InputDecoration(labelText: 'Description'),
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _locationController,
-                      decoration: const InputDecoration(labelText: 'Location'),
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _statusController,
-                      decoration: const InputDecoration(labelText: 'Status'),
-                    ),
-                    const SizedBox(height: 15),
-                    TextFormField(
-                      controller: _cpController,
-                      decoration: const InputDecoration(labelText: 'cp'),
-                    ),
-                    const SizedBox(height: 15),
-                    TextFormField(
-                      controller: _dateController,
-                      decoration:
-                          const InputDecoration(labelText: 'Date (YYYY-MM-DD)'),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        _handleEventAction(event_ID: _selectedEvent_ID);
-                      },
-                      style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.teal),
-                      child: Text(
-                        _selectedEvent_ID == null
-                            ? 'Add Event'
-                            : 'Update Event', // This will display "Update Event" when editing an event
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            const SizedBox(height: 30),
-            const Text(
-              'Event List',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.teal,
-              ),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: _eventList.length,
-              itemBuilder: (context, index) {
-                var event = _eventList[index];
-                return ListTile(
-                  title: Text(event['title']),
-                  subtitle: Text(event['description']),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.teal),
-                        onPressed: () {
-                          _event_IDController.text = event['event_ID'];
-                          _titleController.text = event['title'];
-                          _descriptionController.text = event['description'];
-                          _locationController.text = event['location'];
-                          _statusController.text = event['Status'];
-                          _cpController.text = event['cp'];
-                          _dateController.text =
-                              event['date']; // Directly use the date string
-                          setState(() {
-                            _selectedEvent_ID = event.id;
-                          });
-                        },
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () {
-                          _deleteEvent(event.id);
-                        },
-                      ),
-                    ],
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            controller: _scrollController, // Attach scroll controller
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Card with form fields
+                Card(
+                  elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
                   ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          _selectedEvent_ID == null ? 'Add Event' : 'Update Event',
+                          style: const TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.teal,
+                          ),
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: _event_IDController,
+                          decoration: const InputDecoration(labelText: 'Event_ID'),
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: _titleController,
+                          decoration: const InputDecoration(labelText: 'Title'),
+                        ),
+                        const SizedBox(height: 15),
+                        TextFormField(
+                          controller: _descriptionController,
+                          decoration: const InputDecoration(labelText: 'Description'),
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: _locationController,
+                          decoration: const InputDecoration(labelText: 'Location'),
+                        ),
+                        const SizedBox(height: 20),
+                        TextFormField(
+                          controller: _statusController,
+                          decoration: const InputDecoration(labelText: 'Status'),
+                        ),
+                        const SizedBox(height: 15),
+                        TextFormField(
+                          controller: _cpController,
+                          decoration: const InputDecoration(labelText: 'cp'),
+                        ),
+                        const SizedBox(height: 15),
+                        TextFormField(
+                          controller: _dateController,
+                          decoration:
+                              const InputDecoration(labelText: 'Date (YYYY-MM-DD)'),
+                        ),
+                        const SizedBox(height: 20),
+                        ElevatedButton(
+                          onPressed: () {
+                            _handleEventAction(event_ID: _selectedEvent_ID);
+                          },
+                          style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.teal),
+                          child: Text(
+                            _selectedEvent_ID == null
+                                ? 'Add Event'
+                                : 'Update Event', // This will display "Update Event" when editing an event
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 30),
+                const Text(
+                  'Event List',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal,
+                  ),
+                ),
+                ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: _eventList.length,
+                  itemBuilder: (context, index) {
+                    var event = _eventList[index];
+                    return ListTile(
+                      title: Text(event['title']),
+                      subtitle: Text(event['description']),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit, color: Colors.teal),
+                            onPressed: () {
+                              _event_IDController.text = event['event_ID'];
+                              _titleController.text = event['title'];
+                              _descriptionController.text = event['description'];
+                              _locationController.text = event['location'];
+                              _statusController.text = event['Status'];
+                              _cpController.text = event['cp'];
+                              _dateController.text =
+                                  event['date']; // Directly use the date string
+                              setState(() {
+                                _selectedEvent_ID = event.id;
+                              });
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete, color: Colors.red),
+                            onPressed: () {
+                              _deleteEvent(event.id);
+                            },
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+          // Scroll Down Button
+          Positioned(
+            bottom: 60,
+            right: 20,
+            child: FloatingActionButton(
+              onPressed: () {
+                _scrollController.animateTo(
+                  _scrollController.position.maxScrollExtent,
+                  duration: const Duration(seconds: 1),
+                  curve: Curves.easeInOut,
                 );
               },
+              backgroundColor: Colors.teal,
+              child: const Icon(Icons.arrow_downward),
             ),
-          ],
-        ),
+          ),
+          // Scroll Up Button
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: FloatingActionButton(
+              onPressed: () {
+                _scrollController.animateTo(
+                  _scrollController.position.minScrollExtent,
+                  duration: const Duration(seconds: 1),
+                  curve: Curves.easeInOut,
+                );
+              },
+              backgroundColor: Colors.teal,
+              child: const Icon(Icons.arrow_upward),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -3,12 +3,14 @@ class MemberModel {
   final String fullName;
   final int batch;
   final String position;
+  final String division;
 
   MemberModel({
     required this.memberId,
     required this.fullName,
     required this.batch,
     required this.position,
+    required this.division
   });
 
   // Factory constructor to create an instance from a map
@@ -18,6 +20,7 @@ class MemberModel {
       fullName: map['fullName'] ?? '',
       batch: map['batch'] ?? '',
       position: map['position'] ?? '',
+      division: map['division'] ?? '',
     );
   }
 
@@ -27,6 +30,7 @@ class MemberModel {
       'fullName': fullName,
       'batch': batch,
       'position': position,
+      'division': division,
     };
   }
 }

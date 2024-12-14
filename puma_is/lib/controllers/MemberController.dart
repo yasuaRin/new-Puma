@@ -8,11 +8,13 @@ class MemberController {
     required String fullName,
     required int batch,
     required String position,
+    required String division,
   }) {
     return _memberServices.addMember(
       fullName: fullName,
       batch: batch,
       position: position,
+      division: division,
     );
   }
 
@@ -22,12 +24,14 @@ class MemberController {
     required String fullName,
     required int batch,
     required String position,
+    required String division,
   }) {
     return _memberServices.updateMember(
       memberId: memberId,
       fullName: fullName,
       batch: batch,
       position: position,
+      division: division,
     );
   }
 
@@ -44,5 +48,8 @@ class MemberController {
   // Fetch members by batch
   Future<List<Map<String, dynamic>>> fetchMembersByBatch(int batch) {
     return _memberServices.getMembersByBatch(batch);
+  }
+  Future<List<Map<String, dynamic>>> fetchMembersByDivision(String division) {
+    return _memberServices.getMembersByDivision(division);
   }
 }
