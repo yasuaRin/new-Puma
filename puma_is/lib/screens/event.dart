@@ -13,8 +13,7 @@ class _EventPageState extends State<EventPage> {
   List<DocumentSnapshot> _pastEvents = [];
   List<DocumentSnapshot> _allEvents = [];
   String _currentFilter = 'upcoming';
-  
-  // Map of event titles to their respective image paths
+
   final Map<String, String> eventImages = {
     'Temu Alumni': 'assets/images/temuAlumni.jpeg',
     'Hackathon': 'assets/images/hackathon.jpg',
@@ -28,50 +27,45 @@ class _EventPageState extends State<EventPage> {
     var eventQuery = FirebaseFirestore.instance.collection('events');
 
     try {
-      // Fetch all events
       var event = await eventQuery.get();
-      print("Fetched ${event.docs.length} events"); // Debugging line to check number of fetched documents
+      print("Fetched ${event.docs.length} events");
 
-      // Separate events into upcoming, past and all events
       List<DocumentSnapshot> upcomingEvents = [];
       List<DocumentSnapshot> pastEvents = [];
       List<DocumentSnapshot> allEvents = [];
 
       for (var doc in event.docs) {
-        var eventData = doc.data();
+        var eventData = doc.data() as Map<String, dynamic>;
 
-        // Check event status and categorize
         if (eventData['Status'] == 'upcoming') {
           upcomingEvents.add(doc);
         } else if (eventData['Status'] == 'past') {
           pastEvents.add(doc);
         }
-        allEvents.add(doc); // Add to all events list
+        allEvents.add(doc);
       }
 
-      // Update the UI with the categorized events
       setState(() {
         _upcomingEvents = upcomingEvents;
         _pastEvents = pastEvents;
         _allEvents = allEvents;
       });
     } catch (e) {
-      print("Error fetching events: $e"); // Catch any errors during fetch
+      print("Error fetching events: $e");
     }
   }
 
-  // Toggle between upcoming, past, and all events
   void _updateEventFilter(String status) {
     setState(() {
       _currentFilter = status;
     });
-    _fetchEvents(); // Re-fetch events based on the new filter
+    _fetchEvents();
   }
 
   @override
   void initState() {
     super.initState();
-    _fetchEvents(); // Fetch events initially
+    _fetchEvents();
   }
 
   @override
@@ -79,7 +73,7 @@ class _EventPageState extends State<EventPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Event Page'),
-        backgroundColor: Colors.teal,
+        backgroundColor: Colors.grey,
         actions: [
           PopupMenuButton<String>(
             onSelected: _updateEventFilter,
@@ -87,7 +81,16 @@ class _EventPageState extends State<EventPage> {
               return {'All', 'Upcoming', 'Past'}.map((String choice) {
                 return PopupMenuItem<String>(
                   value: choice.toLowerCase(),
-                  child: Text(choice),
+                  child: Center(
+                    child: Text(
+                      choice,
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
+                    ),
+                  ),
                 );
               }).toList();
             },
@@ -95,109 +98,125 @@ class _EventPageState extends State<EventPage> {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              _currentFilter == 'upcoming' ? 'Upcoming Events' 
-              : _currentFilter == 'past' ? 'Past Events' 
-              : 'All Events',
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.teal,
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-          Expanded(
-            child: Scrollbar(
-              child: ListView(
-                children: [
-                  _currentFilter == 'upcoming'
-                    ? _buildEventList(_upcomingEvents)
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              const SizedBox(height: 20),
+              GridView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  crossAxisSpacing: 16,
+                  mainAxisSpacing: 16,
+                  childAspectRatio: 0.75,
+                ),
+                itemCount: _currentFilter == 'upcoming'
+                    ? _upcomingEvents.length
                     : _currentFilter == 'past'
-                      ? _buildEventList(_pastEvents)
-                      : _buildEventList(_allEvents),
-                ],
+                        ? _pastEvents.length
+                        : _allEvents.length,
+                itemBuilder: (context, index) {
+                  var event = _currentFilter == 'upcoming'
+                      ? _upcomingEvents[index]
+                      : _currentFilter == 'past'
+                          ? _pastEvents[index]
+                          : _allEvents[index];
+                  return _buildEventCard(event);
+                },
               ),
-            ),
+            ],
           ),
-        ],
+        ),
       ),
     );
   }
 
-  // Function to build event list
-  Widget _buildEventList(List<DocumentSnapshot> eventList) {
-    if (eventList.isEmpty) {
-      return const Center(child: Text('No events available.'));
-    }
+  Widget _buildEventCard(DocumentSnapshot eventDoc) {
+    var event = eventDoc.data() as Map<String, dynamic>;
+    var eventTitle = event['title'] ?? 'No Title';
+    var imageUrl = eventImages[eventTitle] ?? 'assets/images/default.jpg';
 
-    return Column(
-      children: eventList.map((eventDoc) {
-        var event = eventDoc.data() as Map<String, dynamic>;
-        var eventTitle = event['title'] ?? 'No Title';
-        var imageUrl = eventImages[eventTitle] ?? 'assets/images/default.jpg';
+    String status = event['Status'] ?? 'upcoming';
+    Color statusColor = status == 'upcoming' ? Colors.green : Colors.red;
 
-        return Card(
-          elevation: 5,
-          margin: const EdgeInsets.symmetric(vertical: 10),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
+    return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            color: statusColor,
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
+            child: Text(
+              status == 'upcoming' ? 'Upcoming' : 'Past',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          ClipRRect(
+            borderRadius: const BorderRadius.only(
+              bottomLeft: Radius.circular(12),
+              bottomRight: Radius.circular(12),
+            ),
+            child: Image.asset(
+              imageUrl,
+              width: double.infinity,
+              height: 120,
+              fit: BoxFit.cover,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 6.0),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        eventTitle,
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.teal,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        event['description'] ?? 'No Description',
-                        style: const TextStyle(fontSize: 16),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Location: ${event['location'] ?? 'No Location'}',
-                        style: const TextStyle(fontSize: 14, color: Colors.grey),
-                      ), 
-                      const SizedBox(height: 8), 
-                      Text(
-                        'Contact Person: ${event['cp'] ?? 'No Cp'}',
-                        style: const TextStyle(fontSize: 14, color: Colors.grey),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Date: ${event['date'] ?? 'No Date'}',
-                        style: const TextStyle(fontSize: 14, color: Colors.grey),
-                      ),
-                    ],
+                Text(
+                  eventTitle,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black,
                   ),
                 ),
-                const SizedBox(width: 16),
-                Image.asset(
-                  imageUrl,
-                  width: 100, // Set the desired width
-                  height: 100, // Set the desired height
-                  fit: BoxFit.cover, // Adjust the fit if needed
+                const SizedBox(height: 6),
+                Text(
+                  event['description'] ?? 'No Description',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.black,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Location: ${event['location'] ?? 'No Location'}',
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Contact Person: ${event['cp'] ?? 'No CP'}',
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  'Date: ${event['date'] ?? 'No Date'}',
+                  style: const TextStyle(fontSize: 14, color: Colors.grey),
                 ),
               ],
             ),
           ),
-        );
-      }).toList(),
+        ],
+      ),
     );
   }
 }
