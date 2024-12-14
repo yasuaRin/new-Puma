@@ -70,9 +70,10 @@ class _EventPageState extends State<EventPage> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Event Page'),
         backgroundColor: Colors.grey,
         actions: [
           PopupMenuButton<String>(
@@ -84,10 +85,10 @@ class _EventPageState extends State<EventPage> {
                   child: Center(
                     child: Text(
                       choice,
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                        color: isDarkMode ? Colors.white : Colors.black,
                       ),
                     ),
                   ),
@@ -109,10 +110,10 @@ class _EventPageState extends State<EventPage> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
+                  crossAxisCount: 2, // 2 cards per row
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
-                  childAspectRatio: 0.75,
+                  childAspectRatio: 0.75, // Adjust the aspect ratio as needed
                 ),
                 itemCount: _currentFilter == 'upcoming'
                     ? _upcomingEvents.length
@@ -125,7 +126,7 @@ class _EventPageState extends State<EventPage> {
                       : _currentFilter == 'past'
                           ? _pastEvents[index]
                           : _allEvents[index];
-                  return _buildEventCard(event);
+                  return _buildEventCard(event, isDarkMode);
                 },
               ),
             ],
@@ -135,7 +136,7 @@ class _EventPageState extends State<EventPage> {
     );
   }
 
-  Widget _buildEventCard(DocumentSnapshot eventDoc) {
+  Widget _buildEventCard(DocumentSnapshot eventDoc, bool isDarkMode) {
     var event = eventDoc.data() as Map<String, dynamic>;
     var eventTitle = event['title'] ?? 'No Title';
     var imageUrl = eventImages[eventTitle] ?? 'assets/images/default.jpg';
@@ -144,6 +145,7 @@ class _EventPageState extends State<EventPage> {
     Color statusColor = status == 'upcoming' ? Colors.green : Colors.red;
 
     return Card(
+      color: isDarkMode ? const Color.fromARGB(255, 64, 64, 64) : Colors.white, // Change color based on dark mode
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Column(
@@ -181,36 +183,54 @@ class _EventPageState extends State<EventPage> {
               children: [
                 Text(
                   eventTitle,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black,
+                    color: isDarkMode ? Colors.white : Colors.black,
                   ),
                 ),
                 const SizedBox(height: 6),
                 Text(
                   event['description'] ?? 'No Description',
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 14,
-                    color: Colors.black,
+                    color: isDarkMode ? Colors.white : Colors.black,
                   ),
                   overflow: TextOverflow.ellipsis,
                   maxLines: 2,
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  'Location: ${event['location'] ?? 'No Location'}',
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                Row(
+                  children: [
+                    Icon(Icons.location_on, size: 16, color: isDarkMode ? Colors.white : Colors.black54),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Location: ${event['location'] ?? 'No Location'}',
+                      style: TextStyle(fontSize: 14, color: isDarkMode ? Colors.white70 : Colors.black54),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  'Contact Person: ${event['cp'] ?? 'No CP'}',
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                Row(
+                  children: [
+                    Icon(Icons.contact_phone, size: 16, color: isDarkMode ? Colors.white : Colors.black54),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Contact Person: ${event['cp'] ?? 'No CP'}',
+                      style: TextStyle(fontSize: 14, color: isDarkMode ? Colors.white70 : Colors.black54),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 6),
-                Text(
-                  'Date: ${event['date'] ?? 'No Date'}',
-                  style: const TextStyle(fontSize: 14, color: Colors.grey),
+                Row(
+                  children: [
+                    Icon(Icons.date_range, size: 16, color: isDarkMode ? Colors.white : Colors.black54),
+                    const SizedBox(width: 4),
+                    Text(
+                      'Date: ${event['date'] ?? 'No Date'}',
+                      style: TextStyle(fontSize: 14, color: isDarkMode ? Colors.white70 : Colors.black54),
+                    ),
+                  ],
                 ),
               ],
             ),

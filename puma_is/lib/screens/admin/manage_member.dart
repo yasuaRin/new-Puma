@@ -18,7 +18,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
 
   List<DocumentSnapshot> _memberList = [];
   String? _selectedMemberId;
-  final ScrollController _scrollController = ScrollController(); // Scroll controller
+  final ScrollController _scrollController = ScrollController(); 
 
   @override
   void initState() {
@@ -119,183 +119,199 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Determine the current theme mode
+    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = isDarkMode ? Colors.white : Colors.black;
+    final backgroundColor = isDarkMode ? Colors.black : Colors.white;
+
     return Scaffold(
+      backgroundColor: Colors.white, 
       appBar: AppBar(
-        title: const Text('Member Management'),
-        backgroundColor: Colors.teal,
-      ),
-      body: SingleChildScrollView(
-        controller: _scrollController, // Scroll controller for body
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(15),
+        title: Center(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(
+                Icons.warning,
+                color: isDarkMode ? Colors.white : Colors.black, 
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  children: [
-                    Text(
-                      _selectedMemberId == null
-                          ? 'Add Member'
-                          : 'Update Member',
-                      style: const TextStyle(
-                        fontSize: 22,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.teal,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _fullNameController,
-                      decoration: InputDecoration(
-                        labelText: 'Full Name',
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    TextFormField(
-                      controller: _batchController,
-                      keyboardType: TextInputType.number,
-                      decoration: InputDecoration(
-                        labelText: 'Batch',
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    TextFormField(
-                      controller: _positionController,
-                      decoration: InputDecoration(
-                        labelText: 'Position',
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-                    TextFormField(
-                      controller: _divisionController,
-                      decoration: InputDecoration(
-                        labelText: 'Division',
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () {
-                        _handleMemberAction(memberId: _selectedMemberId);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      child: Text(
-                        _selectedMemberId == null
-                            ? 'Add Member'
-                            : 'Update Member',
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ),
-                  ],
+              SizedBox(width: 8), 
+              Text(
+                'Member Management',
+                style: TextStyle(
+                  fontSize: 20, 
+                  fontWeight: FontWeight.bold,
+                  color: isDarkMode ? Colors.white : Colors.black, 
                 ),
               ),
-            ),
-            const SizedBox(height: 30),
-            const Text(
-              'Member List',
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.teal,
+              SizedBox(width: 8), 
+              Icon(
+                Icons.warning,
+                color: isDarkMode ? Colors.white : Colors.black,
               ),
-            ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: _memberList.length,
-              itemBuilder: (context, index) {
-                var member = _memberList[index];
-                return ListTile(
-                  title: Text(member['fullName']),
-                  subtitle: Text(
-                      'Batch: ${member['batch']}, Division: ${member['division']}'),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
+            ],
+          ),
+        ),
+        backgroundColor: isDarkMode ? Colors.black : Colors.white, 
+      ),
+      body: SingleChildScrollView(
+        controller: _scrollController, 
+        padding: const EdgeInsets.all(16.0),
+        child: Container(
+          color: Colors.white, 
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
                     children: [
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.teal),
-                        onPressed: () {
-                          setState(() {
-                            _selectedMemberId = member.id;
-                            _fullNameController.text = member['fullName'];
-                            _batchController.text = member['batch'].toString();
-                            _positionController.text = member['position'];
-                            _divisionController.text = member['division'];
-                          });
-                        },
+                      Text(
+                        _selectedMemberId == null ? 'Add Member' : 'Update Member',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: primaryColor,
+                        ),
                       ),
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _deleteMember(member.id),
+                      const SizedBox(height: 20),
+                      TextFormField(
+                        controller: _fullNameController,
+                        decoration: InputDecoration(
+                          labelText: 'Full Name',
+                          filled: true,
+                          fillColor: Colors.white, 
+                          labelStyle: TextStyle(color: Colors.black), 
+                          hintStyle: TextStyle(color: Colors.black), 
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        style: TextStyle(color: Colors.black), 
+                      ),
+                      const SizedBox(height: 15),
+                      TextFormField(
+                        controller: _batchController,
+                        keyboardType: TextInputType.number,
+                        decoration: InputDecoration(
+                          labelText: 'Batch',
+                          filled: true,
+                          fillColor: Colors.white, 
+                          labelStyle: TextStyle(color: Colors.black), 
+                          hintStyle: TextStyle(color: Colors.black), 
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        style: TextStyle(color: Colors.black), 
+                      ),
+                      const SizedBox(height: 15),
+                      TextFormField(
+                        controller: _positionController,
+                        decoration: InputDecoration(
+                          labelText: 'Position',
+                          filled: true,
+                          fillColor: Colors.white, 
+                          labelStyle: TextStyle(color: Colors.black), 
+                          hintStyle: TextStyle(color: Colors.black), 
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      const SizedBox(height: 15),
+                      TextFormField(
+                        controller: _divisionController,
+                        decoration: InputDecoration(
+                          labelText: 'Division',
+                          filled: true,
+                          fillColor: Colors.white, 
+                          labelStyle: TextStyle(color: Colors.black), 
+                          hintStyle: TextStyle(color: Colors.black), 
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        style: TextStyle(color: Colors.black), 
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () {
+                          _handleMemberAction(memberId: _selectedMemberId);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: isDarkMode ? Colors.white : Colors.black, 
+                          padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        child: Text(
+                          _selectedMemberId == null ? 'Add Member' : 'Update Member',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: isDarkMode ? Colors.black : Colors.white, 
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                );
-              },
-            ),
-          ],
+                ),
+              ),
+              const SizedBox(height: 30),
+              Text(
+                'Member List',
+                style: TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: isDarkMode ? Colors.white : Colors.black,
+                ),
+              ),
+              ListView.builder(
+                shrinkWrap: true,
+                itemCount: _memberList.length,
+                itemBuilder: (context, index) {
+                  var member = _memberList[index];
+                  return ListTile(
+                    title: Text(member['fullName']),
+                    subtitle: Text(
+                        'Batch: ${member['batch']}, Division: ${member['division']}'),
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () {
+                            setState(() {
+                              _selectedMemberId = member.id;
+                              _fullNameController.text = member['fullName'];
+                              _batchController.text = member['batch'].toString();
+                              _positionController.text = member['position'];
+                              _divisionController.text = member['division'];
+                            });
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete),
+                          onPressed: () {
+                            _deleteMember(member.id);
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          FloatingActionButton(
-            onPressed: () {
-              _scrollController.animateTo(
-                0, // Scroll to top
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
-            },
-            backgroundColor: Colors.teal,
-            child: const Icon(Icons.arrow_upward),
-          ),
-          const SizedBox(height: 10),
-          FloatingActionButton(
-            onPressed: () {
-              _scrollController.animateTo(
-                _scrollController.position.maxScrollExtent, // Scroll to bottom
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeInOut,
-              );
-            },
-            backgroundColor: Colors.teal,
-            child: const Icon(Icons.arrow_downward),
-          ),
-        ],
       ),
     );
   }

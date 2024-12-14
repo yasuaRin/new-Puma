@@ -28,14 +28,28 @@ class _InfoPageState extends State<InfoPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Check if dark mode is enabled
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Information Page"),
-        backgroundColor: Colors.teal,
+        backgroundColor: isDarkMode ? Colors.grey[850] : Color(0xffB3C8CF), // Set grey color for dark mode
         centerTitle: true,
         elevation: 5,
       ),
-      body: Padding(
+      body: Container(
+        decoration: BoxDecoration(
+          // Set the background depending on the theme mode
+          gradient: isDarkMode
+              ? null
+              : LinearGradient(
+                  colors: [Colors.blueGrey, Colors.white],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+          color: isDarkMode ? Colors.grey[850] : Colors.transparent, // Set grey for dark mode
+        ),
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -56,17 +70,40 @@ class _InfoPageState extends State<InfoPage> {
                         return Card(
                           margin: const EdgeInsets.symmetric(vertical: 8.0),
                           elevation: 3,
+                          color: isDarkMode ? Colors.grey[800] : Colors.white, // Adjust card color based on theme
                           child: ListTile(
-                            title: Text(
-                              info['title'],
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                            title: Row(
+                              children: [
+                                Icon(
+                                  Icons.info_outline, // Info icon
+                                  color: Colors.blueGrey,
+                                ),
+                                const SizedBox(width: 8), // Space between the icon and text
+                                Text(
+                                  info['title'],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 18,
+                                    color: isDarkMode ? Colors.white : Colors.black,
+                                  ),
+                                ),
+                              ],
                             ),
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text("Content: ${info['content']}"),
-                                Text("Contact: ${info['contactPerson']}"),
-                                Text("Date: ${DateTime.parse(info['dateTime'].toDate().toString()).toLocal()}"),
+                                Text(
+                                  "Content: ${info['content']}",
+                                  style: TextStyle(color: isDarkMode ? Colors.white70 : Colors.black),
+                                ),
+                                Text(
+                                  "Contact: ${info['contactPerson']}",
+                                  style: TextStyle(color: isDarkMode ? Colors.white70 : Colors.black),
+                                ),
+                                Text(
+                                  "Date: ${DateTime.parse(info['dateTime'].toDate().toString()).toLocal()}",
+                                  style: TextStyle(color: isDarkMode ? Colors.white70 : Colors.black),
+                                ),
                               ],
                             ),
                           ),

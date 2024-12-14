@@ -14,7 +14,7 @@ class _MemberPageState extends State<MemberPage> {
   String _currentFilter = 'All';
   ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
-  int _itemsLimit = 7; // Load 7 cards at a time
+  int _itemsLimit = 13; // Display all members initially
 
   final Map<String, String> memberImages = {
     'John Doe': 'assets/images/johndoe.jpg',
@@ -32,6 +32,7 @@ class _MemberPageState extends State<MemberPage> {
     'Jacky Witeen': 'assets/images/jackywiteen.jpeg',
   };
 
+  // Fetch members by division
   void _fetchMembersByDivision(String division) async {
     try {
       var memberQuery = FirebaseFirestore.instance.collection('Members');
@@ -47,7 +48,7 @@ class _MemberPageState extends State<MemberPage> {
 
       setState(() {
         _allMembers = allMembers;
-        _filteredMembers = filteredMembers.take(_itemsLimit).toList();
+        _filteredMembers = filteredMembers; // Removed the limit for _itemsLimit
       });
     } catch (e) {
       print('Error fetching members: $e');
@@ -81,6 +82,7 @@ class _MemberPageState extends State<MemberPage> {
     super.dispose();
   }
 
+  // Scroll listener to load more members
   void _scrollListener() {
     if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
@@ -92,11 +94,11 @@ class _MemberPageState extends State<MemberPage> {
     }
   }
 
+  // Load more members (not necessary anymore since we're showing all)
   void _loadMoreMembers() {
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
         _isLoadingMore = false;
-        _itemsLimit += 7; // Load 7 more cards
         _filteredMembers = _allMembers.take(_itemsLimit).toList();
       });
     });
@@ -143,67 +145,70 @@ class _MemberPageState extends State<MemberPage> {
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          return SingleChildScrollView(
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Center(
-                      child: Text(
-                        _currentFilter == 'All'
-                            ? 'All Members'
-                            : 'Members in $_currentFilter Division',
-                        style: TextStyle(
-                          fontSize: 22,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).brightness == Brightness.dark
-                              ? Colors.white // White text for dark mode
-                              : Colors.black, // Black text for light mode
-                        ),
+          int crossAxisCount = 2; // Always display 2 cards per row
+          double childAspectRatio = 1.0; // Adjust aspect ratio to fit 2 cards per row
+
+          return SingleChildScrollView( // Make the entire body scrollable
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Center(
+                    child: Text(
+                      _currentFilter == 'All'
+                          ? 'All Members'
+                          : 'Members in $_currentFilter Division',
+                      style: TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Colors.white // White text for dark mode
+                            : Colors.black, // Black text for light mode
                       ),
                     ),
                   ),
-                  const SizedBox(height: 20),
-                  SizedBox(
-                    height: 300, // Fixed height for horizontal scrolling
-                    child: _filteredMembers.isEmpty
-                        ? const Center(
-                            child: Text(
-                              'No Members Found',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.grey,
-                              ),
-                            ),
-                          )
-                        : ListView.builder(
-                            controller: _scrollController,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: _filteredMembers.length,
-                            itemBuilder: (context, index) {
-                              var memberDoc = _filteredMembers[index];
-                              var member = memberDoc.data() as Map<String, dynamic>;
-                              String fullName = member['fullName'] ?? 'No Name';
-                              String batch = _convertToString(member['batch']);
-                              String position = _convertToString(member['position']);
-                              String division = member['division'] ?? 'No Division';
-                              String imagePath = memberImages[fullName] ?? 
-                                  'assets/images/default.jpg';
-
-                              return _buildMemberCard(
-                                  fullName, batch, position, division, imagePath, constraints);
-                            },
+                ),
+                const SizedBox(height: 20),
+                _filteredMembers.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No Members Found',
+                          style: TextStyle(
+                            fontSize: 16,
+                            color: Colors.grey,
                           ),
+                        ),
+                      )
+                    : GridView.builder(
+                        controller: _scrollController,
+                        shrinkWrap: true, // Avoid overflow issue by making the grid take the space it needs
+                        physics: NeverScrollableScrollPhysics(), // Disable internal scrolling of GridView
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: crossAxisCount, // 2 cards per row
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                          childAspectRatio: childAspectRatio, // Adjust aspect ratio for 2 cards per row
+                        ),
+                        itemCount: _filteredMembers.length,
+                        itemBuilder: (context, index) {
+                          var memberDoc = _filteredMembers[index];
+                          var member = memberDoc.data() as Map<String, dynamic>;
+                          String fullName = member['fullName'] ?? 'No Name';
+                          String batch = _convertToString(member['batch']);
+                          String position = _convertToString(member['position']);
+                          String division = member['division'] ?? 'No Division';
+                          String imagePath = memberImages[fullName] ?? 
+                              'assets/images/default.jpg';
+
+                          return _buildMemberCard(
+                              fullName, batch, position, division, imagePath);
+                        },
+                      ),
+                if (_isLoadingMore)
+                  const Center(
+                    child: CircularProgressIndicator(),
                   ),
-                  if (_isLoadingMore)
-                    const Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                ],
-              ),
+              ],
             ),
           );
         },
@@ -217,21 +222,16 @@ class _MemberPageState extends State<MemberPage> {
   }
 
   Widget _buildMemberCard(
-      String fullName, String batch, String position, String division, String imagePath, BoxConstraints constraints) {
-    double cardWidth = constraints.maxWidth * 0.23;
-
-    // Get the current theme's brightness (light or dark)
+      String fullName, String batch, String position, String division, String imagePath) {
     bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
 
     return GestureDetector(
       child: Card(
         elevation: 8,
-        margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15),
         ),
         child: Container(
-          width: cardWidth,
           padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             color: isDarkMode ? Colors.grey[800] : Colors.white, // Set card color based on the theme
@@ -262,23 +262,15 @@ class _MemberPageState extends State<MemberPage> {
                 ),
               ),
               const SizedBox(height: 20),
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                height: 80,
-                curve: Curves.easeInOut,
-                child: Column(
-                  children: [
-                    Text(
-                      'Batch: $batch\nPosition: $position\nDivision: $division',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        fontSize: 14, 
-                        color: isDarkMode ? Colors.white70 : Colors.black54, // Adjust text color for dark and light mode
-                      ),
-                    ),
-                  ],
+              Text(
+                'Batch: $batch\nPosition: $position\nDivision: $division',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14, 
+                  color: isDarkMode ? Colors.white70 : Colors.black54, // Adjust text color for dark and light mode
                 ),
               ),
+              const SizedBox(height: 36), // Add 36px bottom padding
             ],
           ),
         ),

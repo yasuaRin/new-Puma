@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:puma_is/controllers/InfoController.dart';
-import 'package:puma_is/services/info_services.dart';
 
 class ManageInfoPage extends StatefulWidget {
   const ManageInfoPage({super.key});
@@ -17,12 +16,12 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
   final TextEditingController _contactPersonController = TextEditingController();
   DateTime? _selectedDate;
 
-  List<DocumentSnapshot> _infoList = []; // List to store info from Firebase
-  String? _selectedInfoId; // Track selected info for update
+  List<DocumentSnapshot> _infoList = [];
+  String? _selectedInfoId;
 
-  final ScrollController _scrollController = ScrollController(); // Scroll controller
+  final ScrollController _scrollController = ScrollController();
 
-  // Fetch Info from Firebase
+  // Fetching info from Firestore
   void _fetchInfo() async {
     var info = await FirebaseFirestore.instance.collection('info').get();
     setState(() {
@@ -30,7 +29,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
     });
   }
 
-  // Handle Create/Update Info
+  // Handling add/update operation
   void _handleInfoAction({String? infoId}) {
     if (_titleController.text.isEmpty ||
         _contentController.text.isEmpty ||
@@ -61,12 +60,11 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Info updated successfully")));
     }
 
-    // Clear fields and fetch updated info list
     _clearFields();
     _fetchInfo();
   }
 
-  // Delete Info Button with confirmation dialog
+  // Deleting an info item
   void _deleteInfo(String infoId) async {
     showDialog(
       context: context,
@@ -98,7 +96,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
     );
   }
 
-  // Clear input fields
+  // Clearing input fields
   void _clearFields() {
     _titleController.clear();
     _contentController.clear();
@@ -109,29 +107,54 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
     });
   }
 
+  // Initializing state
   @override
   void initState() {
     super.initState();
-    _fetchInfo(); // Fetch info when the page loads
+    _fetchInfo();
   }
 
   @override
   void dispose() {
-    _scrollController.dispose(); // Dispose of the scroll controller when the page is disposed
+    _scrollController.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    Color buttonTextColor = Colors.black;
+    Color appBarTextColor = Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black;
+    Color appBarColor = Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white;
+    Color backgroundColor = Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white;
+    Color textColor = Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Manage Info'),
-        backgroundColor: Colors.teal,
+        title: Center(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.warning_amber_outlined, color: Colors.black), // First warning icon
+              const SizedBox(width: 8),
+              Text(
+                'Manage Info',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  color: appBarTextColor,
+                ),
+              ),
+              const SizedBox(width: 8),
+              Icon(Icons.warning_amber_outlined, color: Colors.black), // Second warning icon
+            ],
+          ),
+        ),
+        backgroundColor: appBarColor,
       ),
+      backgroundColor: backgroundColor,
       body: Stack(
         children: [
           SingleChildScrollView(
-            controller: _scrollController, // Attach scroll controller
+            controller: _scrollController,
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -148,10 +171,10 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                       children: [
                         Text(
                           _selectedInfoId == null ? 'Add Info' : 'Update Info',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: Colors.teal,
+                            color: textColor,
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -159,6 +182,9 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                           controller: _titleController,
                           decoration: InputDecoration(
                             labelText: 'Title',
+                            labelStyle: TextStyle(color: textColor),
+                            hintText: 'Enter title',
+                            hintStyle: TextStyle(color: textColor),
                             filled: true,
                             fillColor: Colors.grey[200],
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -169,6 +195,9 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                           controller: _contentController,
                           decoration: InputDecoration(
                             labelText: 'Content',
+                            labelStyle: TextStyle(color: textColor),
+                            hintText: 'Enter content',
+                            hintStyle: TextStyle(color: textColor),
                             filled: true,
                             fillColor: Colors.grey[200],
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -179,6 +208,9 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                           controller: _contactPersonController,
                           decoration: InputDecoration(
                             labelText: 'Contact Person',
+                            labelStyle: TextStyle(color: textColor),
+                            hintText: 'Enter contact person',
+                            hintStyle: TextStyle(color: textColor),
                             filled: true,
                             fillColor: Colors.grey[200],
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
@@ -193,8 +225,21 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                               firstDate: DateTime(2000),
                               lastDate: DateTime(2100),
                             );
+                            setState(() {});
                           },
-                          child: const Text("Pick Date"),
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: Text(
+                            _selectedDate == null
+                                ? "Pick Date"
+                                : "${_selectedDate!.toLocal()}".split(' ')[0],
+                            style: TextStyle(color: textColor),
+                          ),
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(
@@ -202,13 +247,15 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                             _handleInfoAction(infoId: _selectedInfoId);
                           },
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
-                            padding: const EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                            backgroundColor: Colors.white,
+                            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
                           ),
                           child: Text(
                             _selectedInfoId == null ? 'Add Info' : 'Update Info',
-                            style: const TextStyle(color: Colors.white),
+                            style: TextStyle(color: textColor),
                           ),
                         ),
                       ],
@@ -216,23 +263,28 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                   ),
                 ),
                 const SizedBox(height: 30),
-                const Text(
+                Text(
                   'Info List',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold, color: Colors.teal),
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: textColor,
+                  ),
                 ),
                 ListView.builder(
                   shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: _infoList.length,
                   itemBuilder: (context, index) {
                     var info = _infoList[index];
                     return ListTile(
-                      title: Text(info['title']),
-                      subtitle: Text(info['contactPerson']),
+                      title: Text(info['title'], style: TextStyle(color: textColor)),
+                      subtitle: Text(info['contactPerson'], style: TextStyle(color: textColor)),
                       trailing: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           IconButton(
-                            icon: const Icon(Icons.edit, color: Colors.teal),
+                            icon: Icon(Icons.edit, color: buttonTextColor),
                             onPressed: () {
                               _titleController.text = info['title'];
                               _contentController.text = info['content'];
@@ -257,38 +309,10 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
               ],
             ),
           ),
-          Positioned(
-            bottom: 20,
-            right: 20,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                FloatingActionButton(
-                  onPressed: () {
-                    _scrollController.animateTo(
-                      _scrollController.position.minScrollExtent,
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeInOut,
-                    );
-                  },
-                  child: const Icon(Icons.arrow_upward),
-                  backgroundColor: Colors.teal,
-                ),
-                const SizedBox(height: 10),
-                FloatingActionButton(
-                  onPressed: () {
-                    _scrollController.animateTo(
-                      _scrollController.position.maxScrollExtent,
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeInOut,
-                    );
-                  },
-                  child: const Icon(Icons.arrow_downward),
-                  backgroundColor: Colors.teal,
-                ),
-              ],
+          if (_infoList.isEmpty)
+            Center(
+              child: CircularProgressIndicator(),
             ),
-          ),
         ],
       ),
     );
