@@ -48,7 +48,7 @@ class _MemberPageState extends State<MemberPage> {
 
       setState(() {
         _allMembers = allMembers;
-        _filteredMembers = filteredMembers; // Removed the limit for _itemsLimit
+        _filteredMembers = filteredMembers; 
       });
     } catch (e) {
       print('Error fetching members: $e');
@@ -108,8 +108,8 @@ class _MemberPageState extends State<MemberPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.grey, // Change background to white
-        elevation: 0, // Remove shadow
+        backgroundColor: Colors.grey,
+        elevation: 0, 
         actions: [
           PopupMenuButton<String>(
             onSelected: _updateMemberFilter,
@@ -127,8 +127,8 @@ class _MemberPageState extends State<MemberPage> {
                     choice,
                     style: TextStyle(
                       color: Theme.of(context).brightness == Brightness.dark
-                          ? Colors.white // White text for dark mode
-                          : Colors.black, // Black text for light mode
+                          ? Colors.white 
+                          : Colors.black,
                     ),
                   ),
                 );
@@ -137,8 +137,8 @@ class _MemberPageState extends State<MemberPage> {
             icon: Icon(
               Icons.filter_list,
               color: Theme.of(context).brightness == Brightness.dark
-                  ? Colors.white // White icon for dark mode
-                  : Colors.black, // Black icon for light mode
+                  ? Colors.white 
+                  : Colors.black, 
             ),
           ),
         ],

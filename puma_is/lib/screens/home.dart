@@ -14,10 +14,9 @@ class homePage extends StatefulWidget {
 }
 
 class _homePageState extends State<homePage> {
-  String selectedFeature = 'dashboard'; // Tracks the current selected feature
+  String selectedFeature = 'dashboard'; 
   String get loggedInEmail => widget.loggedInEmail;
 
-  // Method to get username from the email (part before '@')
   String get username {
     return loggedInEmail.split('@')[0];
   }
@@ -60,7 +59,6 @@ class _homePageState extends State<homePage> {
               padding: const EdgeInsets.all(20.0),
               child: Column(
                 children: [
-                  // Welcome section with gradient background
                   Container(
                     padding: const EdgeInsets.all(20.0),
                     decoration: BoxDecoration(
