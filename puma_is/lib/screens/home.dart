@@ -35,18 +35,20 @@ class _homePageState extends State<homePage> {
 
   // Widget that returns different pages based on the selected feature
   Widget buildBody() {
+    ThemeData theme = Theme.of(context); // Get current theme
+    Color textColor = theme.brightness == Brightness.dark ? Colors.black : Colors.white;
+    Color cardColor = theme.brightness == Brightness.dark ? Colors.white : Colors.black;
+
     switch (selectedFeature) {
-      // case 'vote':
-      //   return const VotePage(); // Use the VotePage from vote.dart
       case 'info':
-        return InfoPage(); // Show InfoPage when selectedFeature is 'info'
+        return InfoPage();
       case 'events':
         return EventPage();
       case 'member':
         return MemberPage();
       default:
         return Container(
-          decoration: const BoxDecoration(
+          decoration: BoxDecoration(
             gradient: LinearGradient(
               colors: [Color(0xffB3C8CF), Color(0xffFFE3E3)],
               begin: Alignment.topLeft,
@@ -78,16 +80,16 @@ class _homePageState extends State<homePage> {
                           style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,
-                            color: Colors.blueGrey.shade900,
+                            color: textColor,
                           ),
                         ),
                         const SizedBox(height: 20),
                         Text(
                           'Hello, $username!',
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w500,
-                            color: Colors.black,
+                            color: textColor,
                           ),
                         ),
                       ],
@@ -98,7 +100,7 @@ class _homePageState extends State<homePage> {
                   Container(
                     padding: const EdgeInsets.all(15.0),
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,  // Set color based on theme
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: const [
                         BoxShadow(
@@ -110,12 +112,12 @@ class _homePageState extends State<homePage> {
                     ),
                     child: Column(
                       children: <Widget>[
-                        const Text(
+                        Text(
                           'About PUMA IS',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: Colors.black,
+                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black, // Set text color based on theme
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -124,7 +126,7 @@ class _homePageState extends State<homePage> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 16,
-                            color: Colors.grey.shade700,
+                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black, // Set text color based on theme
                           ),
                         ),
                       ],
@@ -134,61 +136,60 @@ class _homePageState extends State<homePage> {
                   // Our PUMA IS Members Section
                   const SizedBox(height: 30),
                   // Q&A Section
-                  Container(
-                    padding: const EdgeInsets.all(15.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: const [
-                        BoxShadow(
-                          color: Colors.black26,
-                          blurRadius: 5,
-                          offset: Offset(0, 3),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Centered title for FAQ
-                        const Center(
-                          child: Text(
-                            'FAQ',
-                            style: TextStyle(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
+                 Container(
+                  padding: const EdgeInsets.all(15.0),
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 5,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Center the 'FAQ' text
+                      Center(
+                        child: Text(
+                          'FAQ',
+                          style: TextStyle(
+                            fontSize: 22,
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black, // Change color based on theme
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Column(
-                          children: questions.map((questionData) {
-                            final index = questions.indexOf(questionData);
-                            return ExpansionTile(
-                              title: Text(
-                                questionData['question']!,
-                                style: const TextStyle(
-                                  color: Colors.black, // Change question color to black
-                                ),
+                      ),
+                      const SizedBox(height: 10),
+                      Column(
+                        children: questions.map((questionData) {
+                          return ExpansionTile(
+                            title: Text(
+                              questionData['question']!,
+                              style: TextStyle(
+                                color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black, // Change color based on theme
                               ),
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    questionData['answer']!,
-                                    style: const TextStyle(
-                                      color: Colors.black, // Set the answer text color
-                                    ),
+                            ),
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(
+                                  questionData['answer']!,
+                                  style: TextStyle(
+                                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black, // Change color based on theme
                                   ),
                                 ),
-                              ],
-                            );
-                          }).toList(),
-                        ),
-                      ],
-                    ),
+                              ),
+                            ],
+                          );
+                        }).toList(),
+                      ),
+                    ],
                   ),
+                )
                 ],
               ),
             ),
