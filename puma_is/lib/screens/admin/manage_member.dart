@@ -18,7 +18,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
 
   List<DocumentSnapshot> _memberList = [];
   String? _selectedMemberId;
-  final ScrollController _scrollController = ScrollController(); 
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
@@ -125,7 +125,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
     final backgroundColor = isDarkMode ? Colors.black : Colors.white;
 
     return Scaffold(
-      backgroundColor: Colors.white, 
+      backgroundColor: backgroundColor, // Set the scaffold background color based on dark mode
       appBar: AppBar(
         title: Center(
           child: Row(
@@ -133,18 +133,18 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
             children: [
               Icon(
                 Icons.warning,
-                color: isDarkMode ? Colors.white : Colors.black, 
+                color: isDarkMode ? Colors.white : Colors.black,
               ),
-              SizedBox(width: 8), 
+              SizedBox(width: 8),
               Text(
                 'Member Management',
                 style: TextStyle(
-                  fontSize: 20, 
+                  fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: isDarkMode ? Colors.white : Colors.black, 
+                  color: primaryColor,
                 ),
               ),
-              SizedBox(width: 8), 
+              SizedBox(width: 8),
               Icon(
                 Icons.warning,
                 color: isDarkMode ? Colors.white : Colors.black,
@@ -152,13 +152,13 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
             ],
           ),
         ),
-        backgroundColor: isDarkMode ? Colors.black : Colors.white, 
+        backgroundColor: isDarkMode ? Colors.black : Colors.white,
       ),
       body: SingleChildScrollView(
-        controller: _scrollController, 
+        controller: _scrollController,
         padding: const EdgeInsets.all(16.0),
         child: Container(
-          color: Colors.white, 
+          color: isDarkMode ? Colors.black : Colors.white, // Set background color for the body
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -167,7 +167,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
-                color: isDarkMode ? Colors.grey[800] : Colors.grey[200],
+                color: isDarkMode ? Colors.grey.shade800 : Color(0xFFF2F2F2), // equivalent to white with slight opacity (200), // Card background color
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -186,14 +186,14 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                         decoration: InputDecoration(
                           labelText: 'Full Name',
                           filled: true,
-                          fillColor: Colors.white, 
-                          labelStyle: TextStyle(color: Colors.black), 
-                          hintStyle: TextStyle(color: Colors.black), 
+                          fillColor: Colors.white, // White fill color
+                          labelStyle: TextStyle(color: Colors.black),
+                          hintStyle: TextStyle(color: Colors.black),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        style: TextStyle(color: Colors.black), 
+                        style: TextStyle(color: primaryColor),
                       ),
                       const SizedBox(height: 15),
                       TextFormField(
@@ -202,14 +202,14 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                         decoration: InputDecoration(
                           labelText: 'Batch',
                           filled: true,
-                          fillColor: Colors.white, 
-                          labelStyle: TextStyle(color: Colors.black), 
-                          hintStyle: TextStyle(color: Colors.black), 
+                          fillColor: Colors.white, // White fill color
+                          labelStyle: TextStyle(color: Colors.black),
+                          hintStyle: TextStyle(color: Colors.black),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        style: TextStyle(color: Colors.black), 
+                        style: TextStyle(color: primaryColor),
                       ),
                       const SizedBox(height: 15),
                       TextFormField(
@@ -217,14 +217,14 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                         decoration: InputDecoration(
                           labelText: 'Position',
                           filled: true,
-                          fillColor: Colors.white, 
-                          labelStyle: TextStyle(color: Colors.black), 
-                          hintStyle: TextStyle(color: Colors.black), 
+                          fillColor: Colors.white, // White fill color
+                          labelStyle: TextStyle(color: Colors.black),
+                          hintStyle: TextStyle(color: Colors.black),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        style: TextStyle(color: Colors.black),
+                        style: TextStyle(color: primaryColor),
                       ),
                       const SizedBox(height: 15),
                       TextFormField(
@@ -232,14 +232,14 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                         decoration: InputDecoration(
                           labelText: 'Division',
                           filled: true,
-                          fillColor: Colors.white, 
-                          labelStyle: TextStyle(color: Colors.black), 
-                          hintStyle: TextStyle(color: Colors.black), 
+                          fillColor: Colors.white, // White fill color
+                          labelStyle: TextStyle(color: Colors.black),
+                          hintStyle: TextStyle(color: Colors.black),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
-                        style: TextStyle(color: Colors.black), 
+                        style: TextStyle(color: primaryColor),
                       ),
                       const SizedBox(height: 20),
                       ElevatedButton(
@@ -247,17 +247,17 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                           _handleMemberAction(memberId: _selectedMemberId);
                         },
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: isDarkMode ? Colors.white : Colors.black, 
+                          backgroundColor: isDarkMode ? Colors.white : Colors.black,
                           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(20), // Set radius here to round the corners
                           ),
                         ),
                         child: Text(
                           _selectedMemberId == null ? 'Add Member' : 'Update Member',
                           style: TextStyle(
                             fontSize: 16,
-                            color: isDarkMode ? Colors.black : Colors.white, 
+                            color: isDarkMode ? Colors.black : Colors.white,
                           ),
                         ),
                       ),
@@ -271,7 +271,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.bold,
-                  color: isDarkMode ? Colors.white : Colors.black,
+                  color: primaryColor,
                 ),
               ),
               ListView.builder(
@@ -279,38 +279,78 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                 itemCount: _memberList.length,
                 itemBuilder: (context, index) {
                   var member = _memberList[index];
-                  return ListTile(
-                    title: Text(member['fullName']),
-                    subtitle: Text(
-                        'Batch: ${member['batch']}, Division: ${member['division']}'),
-                    trailing: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        IconButton(
-                          icon: const Icon(Icons.edit),
-                          onPressed: () {
-                            setState(() {
-                              _selectedMemberId = member.id;
-                              _fullNameController.text = member['fullName'];
-                              _batchController.text = member['batch'].toString();
-                              _positionController.text = member['position'];
-                              _divisionController.text = member['division'];
-                            });
-                          },
-                        ),
-                        IconButton(
-                          icon: const Icon(Icons.delete),
-                          onPressed: () {
-                            _deleteMember(member.id);
-                          },
-                        ),
-                      ],
+                  return Card(
+                   color: isDarkMode ? Colors.grey.shade800 : Color(0xFFF2F2F2), // equivalent to white with slight opacity (200), // Card background color
+                    child: ListTile(
+                      title: Text(member['fullName'], style: TextStyle(color: primaryColor)),
+                      subtitle: Text(
+                          'Batch: ${member['batch']}, Division: ${member['division']}',
+                          style: TextStyle(color: primaryColor)),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              setState(() {
+                                _selectedMemberId = member.id;
+                                _fullNameController.text = member['fullName'];
+                                _batchController.text = member['batch'].toString();
+                                _positionController.text = member['position'];
+                                _divisionController.text = member['division'];
+                              });
+                            },
+                          ),
+                          IconButton(
+                            icon: Icon(
+                              Icons.delete,
+                              color: isDarkMode ? Colors.red : Colors.red,
+                            ),
+                            onPressed: () {
+                              _deleteMember(member.id);
+                            },
+                          ),
+                        ],
+                      ),
                     ),
                   );
                 },
               ),
             ],
           ),
+        ),
+      ),
+      // Scroll Up and Scroll Down buttons
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 20),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            FloatingActionButton(
+              onPressed: () {
+                _scrollController.animateTo(
+                  _scrollController.position.minScrollExtent,
+                  duration: const Duration(seconds: 1),
+                  curve: Curves.easeInOut,
+                );
+              },
+              child: const Icon(Icons.arrow_upward),
+              backgroundColor: Colors.white, // Floating button color (white)
+            ),
+            const SizedBox(height: 10),
+            FloatingActionButton(
+              onPressed: () {
+                _scrollController.animateTo(
+                  _scrollController.position.maxScrollExtent,
+                  duration: const Duration(seconds: 1),
+                  curve: Curves.easeInOut,
+                );
+              },
+              child: const Icon(Icons.arrow_downward),
+              backgroundColor: Colors.white, // Floating button color (white)
+            ),
+          ],
         ),
       ),
     );

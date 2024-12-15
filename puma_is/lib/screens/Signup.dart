@@ -104,6 +104,7 @@ class _SignupState extends State<Signup> {
                         const SizedBox(height: 30),
                         // Full Name Input Field
                         TextFormField(
+                          style: const TextStyle(color: Colors.black), // Text color when typing
                           decoration: InputDecoration(
                             suffixIcon: const Icon(
                               Icons.person,
@@ -131,6 +132,7 @@ class _SignupState extends State<Signup> {
                         const SizedBox(height: 20),
                         // Email Input Field
                         TextFormField(
+                          style: const TextStyle(color: Colors.black), // Text color when typing
                           decoration: InputDecoration(
                             suffixIcon: const Icon(
                               Icons.email,
@@ -159,6 +161,7 @@ class _SignupState extends State<Signup> {
                         // Password Input Field
                         TextFormField(
                           obscureText: !_isPasswordVisible,
+                          style: const TextStyle(color: Colors.black), // Text color when typing
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -196,6 +199,7 @@ class _SignupState extends State<Signup> {
                         // Confirm Password Input Field
                         TextFormField(
                           obscureText: !_isConfirmPasswordVisible,
+                          style: const TextStyle(color: Colors.black), // Text color when typing
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
                               icon: Icon(

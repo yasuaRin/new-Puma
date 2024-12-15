@@ -15,41 +15,37 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _fullNameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confirmPasswordController =
-      TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
   bool _termsCondition = false;
 
-  List<DocumentSnapshot> _userList = []; // List to store users from Firebase
-  String? _selectedUserId; // Track selected user for update
+  List<DocumentSnapshot> _userList = [];
+  String? _selectedUserId;
 
-  final ScrollController _scrollController = ScrollController(); // ScrollController for managing scroll position
+  final ScrollController _scrollController = ScrollController();
 
-  // Fetch Users from Firebase and order by fullName
   void _fetchUsers() async {
     var users = await FirebaseFirestore.instance
         .collection('user')
-        .orderBy('fullName') // Sort users by fullName
+        .orderBy('fullName')
         .get();
     setState(() {
       _userList = users.docs;
     });
   }
 
-  // Handle Create/Update User
   void _handleUserAction({String? userId}) {
     if (_IDController.text.isEmpty ||
         _emailController.text.isEmpty ||
         _fullNameController.text.isEmpty ||
         _passwordController.text.isEmpty ||
         _confirmPasswordController.text.isEmpty ||
-        _termsCondition == false) {
+        !_termsCondition) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Please fill in all fields and agree to terms")),
       );
       return;
     }
 
-    // Password strength validation (e.g., at least 8 characters, one special character)
     if (_passwordController.text.length < 8) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Password must be at least 8 characters long")),
@@ -72,8 +68,8 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
         password: _passwordController.text,
         termsCondition: _termsCondition,
       );
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("User created successfully")));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("User created successfully")));
     } else {
       _userController.updateUser(
         userId: userId,
@@ -83,18 +79,15 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
         password: _passwordController.text,
         termsCondition: _termsCondition,
       );
-      ScaffoldMessenger.of(context)
-          .showSnackBar(const SnackBar(content: Text("User updated successfully")));
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("User updated successfully")));
     }
 
-    // Clear fields and fetch updated user list
     _clearFields();
     _fetchUsers();
   }
 
-  // Delete User Button with confirmation dialog
   void _deleteUser(String userId) async {
-    // Show confirmation dialog before deleting
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
@@ -103,7 +96,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
         actions: [
           TextButton(
             onPressed: () {
-              Navigator.of(context).pop(); // Close the dialog
+              Navigator.of(context).pop();
             },
             child: const Text('Cancel'),
           ),
@@ -113,10 +106,9 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                 await _userController.deleteUser(userId);
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("User deleted successfully")));
-                _fetchUsers(); // Fetch updated user list after deletion
-                Navigator.of(context).pop(); // Close the dialog
+                _fetchUsers();
+                Navigator.of(context).pop();
               } catch (e) {
-                print('Error deleting user: $e');
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text("Error deleting user")));
               }
@@ -128,7 +120,6 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
     );
   }
 
-  // Clear input fields
   void _clearFields() {
     _IDController.clear();
     _emailController.clear();
@@ -137,155 +128,134 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
     _confirmPasswordController.clear();
     setState(() {
       _termsCondition = false;
-      _selectedUserId = null; // Reset selected user ID after action
+      _selectedUserId = null;
     });
+  }
+
+  void _scrollToBottom() {
+    _scrollController.animateTo(
+      _scrollController.position.maxScrollExtent,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
+  }
+
+  void _scrollToTop() {
+    _scrollController.animateTo(
+      0.0,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+    );
   }
 
   @override
   void initState() {
     super.initState();
-    _fetchUsers(); // Fetch users when the page loads
+    _fetchUsers();
   }
 
   @override
   Widget build(BuildContext context) {
+    bool isDarkMode = Theme.of(context).brightness == Brightness.dark;
+    Color textColor = isDarkMode ? Colors.white : Colors.black;
+    Color backgroundColor = isDarkMode ? Colors.black : Colors.white;
+    Color boxColor = isDarkMode ? Colors.grey[800] ?? Colors.black : Colors.grey[200] ?? Colors.white;
+    Color buttonColor = isDarkMode ? Colors.black : Colors.white;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('User Management'),
-        backgroundColor: Colors.teal,
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              Icons.warning,
+              color: isDarkMode ? Colors.white : Colors.black,
+            ),
+            const SizedBox(width: 8),
+            Text(
+              'User Management',
+              style: TextStyle(
+                color: isDarkMode ? Colors.white : Colors.black,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(width: 8),
+            Icon(
+              Icons.warning,
+              color: isDarkMode ? Colors.white : Colors.black,
+            ),
+          ],
+        ),
+        backgroundColor: backgroundColor,
       ),
       body: SingleChildScrollView(
-        controller: _scrollController, // Attach the ScrollController
+        controller: _scrollController,
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            // User Information Card for Create or Update
             Card(
               elevation: 5,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),
               ),
+              color: Colors.grey[800],  // Set the card color to grey[800]
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   children: [
                     Text(
                       _selectedUserId == null ? 'Add User' : 'Update User',
-                      style: const TextStyle(
+                      style: TextStyle(
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
-                        color: Colors.teal,
+                        color: textColor,
                       ),
                     ),
                     const SizedBox(height: 20),
-                    TextFormField(
-                      controller: _IDController,
-                      decoration: InputDecoration(
-                        labelText: 'ID',
-                        labelStyle: const TextStyle(color: Colors.teal),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
+                    _buildTextFormField(_IDController, 'ID', textColor),
+                    const SizedBox(height: 10),
+                    _buildTextFormField(_emailController, 'Email', textColor),
+                    const SizedBox(height: 10),
+                    _buildTextFormField(_fullNameController, 'Full Name', textColor),
+                    const SizedBox(height: 10),
+                    _buildTextFormField(_passwordController, 'Password', textColor, obscureText: true),
+                    const SizedBox(height: 10),
+                    _buildTextFormField(_confirmPasswordController, 'Confirm Password', textColor, obscureText: true),
                     const SizedBox(height: 15),
-                    // Email Input Field
-                    TextFormField(
-                      controller: _emailController,
-                      decoration: InputDecoration(
-                        labelText: 'Email',
-                        labelStyle: const TextStyle(color: Colors.teal),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-
-                    // Full Name Input Field
-                    TextFormField(
-                      controller: _fullNameController,
-                      decoration: InputDecoration(
-                        labelText: 'Full Name',
-                        labelStyle: const TextStyle(color: Colors.teal),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 15),
-
-                    // Password Input Field
-                    TextFormField(
-                      controller: _passwordController,
-                      decoration: InputDecoration(
-                        labelText: 'Password',
-                        labelStyle: const TextStyle(color: Colors.teal),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      obscureText: true,
-                    ),
-                    const SizedBox(height: 15),
-
-                    // Confirm Password Input Field
-                    TextFormField(
-                      controller: _confirmPasswordController,
-                      decoration: InputDecoration(
-                        labelText: 'Confirm Password',
-                        labelStyle: const TextStyle(color: Colors.teal),
-                        filled: true,
-                        fillColor: Colors.grey[200],
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                      obscureText: true,
-                    ),
-                    const SizedBox(height: 15),
-
-                    // Terms and Conditions Checkbox
                     CheckboxListTile(
-                      title: const Text('I agree to the terms and conditions'),
+                      title: Text(
+                        'I agree to the terms and conditions',
+                        style: TextStyle(color: textColor),
+                      ),
                       value: _termsCondition,
                       onChanged: (bool? value) {
                         setState(() {
                           _termsCondition = value!;
                         });
                       },
-                      activeColor: Colors.teal,
+                      activeColor: textColor,
                       contentPadding: EdgeInsets.zero,
                     ),
-
-                    // Add or Update User Button
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: () {
                         _handleUserAction(userId: _selectedUserId);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.teal,
-                        padding: const EdgeInsets.symmetric(vertical: 15),
+                        backgroundColor: isDarkMode ? Colors.white : Colors.black, // Change background based on theme
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30), // Adjust padding as requested
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(20), // Adjust the border radius as requested
                         ),
                       ),
                       child: Text(
                         _selectedUserId == null ? 'Add User' : 'Update User',
-                        style: const TextStyle(
+                        style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: isDarkMode ? Colors.black : Colors.white, // Text color opposite to background
                         ),
                       ),
                     ),
@@ -293,47 +263,51 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                 ),
               ),
             ),
-
-            // User List (Read - Fetch from Firebase)
-            const SizedBox(height: 30),
-            const Text(
-              'User List',
+            const SizedBox(height: 20),
+            Text(
+              'Users List',
               style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.teal),
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
             ),
+            const SizedBox(height: 10),
             ListView.builder(
               shrinkWrap: true,
               itemCount: _userList.length,
               itemBuilder: (context, index) {
-                var user = _userList[index];
-                return ListTile(
-                  title: Text(user['fullName']),
-                  subtitle: Text(user['email']),
-                  trailing: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Update Button
-                      IconButton(
-                        icon: const Icon(Icons.edit, color: Colors.teal),
-                        onPressed: () {
-                          setState(() {
-                            _selectedUserId = user.id;
-                            _IDController.text = user['ID'];
-                            _emailController.text = user['email'];
-                            _fullNameController.text = user['fullName'];
-                            _passwordController.text = user['password'];
-                            _confirmPasswordController.text = user['password'];
-                          });
-                        },
-                      ),
-                      // Delete Button
-                      IconButton(
-                        icon: const Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _deleteUser(user.id),
-                      ),
-                    ],
+                DocumentSnapshot user = _userList[index];
+                return Card(
+                  elevation: 5,
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  color: Colors.grey[800],  // Set the card color to grey[800]
+                  child: ListTile(
+                    title: Text(user['fullName'], style: TextStyle(color: Colors.white)), // Ensure the text is visible
+                    subtitle: Text(user['email'], style: TextStyle(color: Colors.white)), // Ensure the text is visible
+                    trailing: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.edit, color: Colors.white),
+                          onPressed: () {
+                            setState(() {
+                              _selectedUserId = user.id;
+                              _IDController.text = user['ID'];
+                              _emailController.text = user['email'];
+                              _fullNameController.text = user['fullName'];
+                              // Do not pre-fill the password fields
+                            });
+                          },
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            _deleteUser(user.id);
+                          },
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -341,35 +315,38 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
           ],
         ),
       ),
-      // Floating Action Buttons
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
           FloatingActionButton(
-            onPressed: () {
-              _scrollController.animateTo(
-                0.0,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-              );
-            },
-            child: const Icon(Icons.arrow_upward),
-            backgroundColor: Colors.teal,
+            onPressed: _scrollToTop,
+            backgroundColor: Colors.white,
+            child: const Icon(Icons.arrow_upward, color: Colors.black),
           ),
           const SizedBox(height: 10),
           FloatingActionButton(
-            onPressed: () {
-              _scrollController.animateTo(
-                _scrollController.position.maxScrollExtent,
-                duration: const Duration(milliseconds: 500),
-                curve: Curves.easeInOut,
-              );
-            },
-            child: const Icon(Icons.arrow_downward),
-            backgroundColor: Colors.teal,
+            onPressed: _scrollToBottom,
+            backgroundColor: Colors.white,
+            child: const Icon(Icons.arrow_downward, color: Colors.black),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTextFormField(TextEditingController controller, String label, Color textColor, {bool obscureText = false}) {
+    return TextFormField(
+      controller: controller,
+      style: TextStyle(color: textColor),
+      obscureText: obscureText,
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: Colors.black),  // Set label text color to black
+        filled: true,
+        fillColor: Colors.white,  // Set the box color to white
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
       ),
     );
   }

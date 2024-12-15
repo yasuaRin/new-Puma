@@ -127,6 +127,9 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
     Color appBarColor = Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white;
     Color backgroundColor = Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white;
     Color textColor = Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black;
+  Color cardColor = Theme.of(context).brightness == Brightness.dark
+  ? Colors.grey[800]! 
+  : Color(0xFFF2F2F2);  // Custom light gray/white shade
 
     return Scaffold(
       appBar: AppBar(
@@ -134,7 +137,10 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(Icons.warning_amber_outlined, color: Colors.black), // First warning icon
+              Icon(
+                Icons.warning_amber_outlined,
+                color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+              ), // First warning icon with dynamic color
               const SizedBox(width: 8),
               Text(
                 'Manage Info',
@@ -144,7 +150,10 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                 ),
               ),
               const SizedBox(width: 8),
-              Icon(Icons.warning_amber_outlined, color: Colors.black), // Second warning icon
+              Icon(
+                Icons.warning_amber_outlined,
+                color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
+              ), // Second warning icon with dynamic color
             ],
           ),
         ),
@@ -165,6 +174,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
+                  color: cardColor, // Set card color to dynamic
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -182,11 +192,11 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                           controller: _titleController,
                           decoration: InputDecoration(
                             labelText: 'Title',
-                            labelStyle: TextStyle(color: textColor),
+                            labelStyle: TextStyle(color: Colors.black),  // Set the label text color to black
                             hintText: 'Enter title',
                             hintStyle: TextStyle(color: textColor),
                             filled: true,
-                            fillColor: Colors.grey[200],
+                            fillColor: Colors.white,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -195,11 +205,11 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                           controller: _contentController,
                           decoration: InputDecoration(
                             labelText: 'Content',
-                            labelStyle: TextStyle(color: textColor),
+                            labelStyle: TextStyle(color: Colors.black),  // Set the label text color to black
                             hintText: 'Enter content',
                             hintStyle: TextStyle(color: textColor),
                             filled: true,
-                            fillColor: Colors.grey[200],
+                            fillColor: Colors.white,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -208,11 +218,11 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                           controller: _contactPersonController,
                           decoration: InputDecoration(
                             labelText: 'Contact Person',
-                            labelStyle: TextStyle(color: textColor),
+                            labelStyle: TextStyle(color: Colors.black),  // Set the label text color to black
                             hintText: 'Enter contact person',
                             hintStyle: TextStyle(color: textColor),
                             filled: true,
-                            fillColor: Colors.grey[200],
+                            fillColor: Colors.white,
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
                           ),
                         ),
@@ -238,7 +248,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                             _selectedDate == null
                                 ? "Pick Date"
                                 : "${_selectedDate!.toLocal()}".split(' ')[0],
-                            style: TextStyle(color: textColor),
+                            style: TextStyle(color: Colors.black), // Set text color to black
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -255,7 +265,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                           ),
                           child: Text(
                             _selectedInfoId == null ? 'Add Info' : 'Update Info',
-                            style: TextStyle(color: textColor),
+                            style: TextStyle(color: Colors.black), // Set text color to black
                           ),
                         ),
                       ],
@@ -277,31 +287,42 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                   itemCount: _infoList.length,
                   itemBuilder: (context, index) {
                     var info = _infoList[index];
-                    return ListTile(
-                      title: Text(info['title'], style: TextStyle(color: textColor)),
-                      subtitle: Text(info['contactPerson'], style: TextStyle(color: textColor)),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          IconButton(
-                            icon: Icon(Icons.edit, color: buttonTextColor),
-                            onPressed: () {
-                              _titleController.text = info['title'];
-                              _contentController.text = info['content'];
-                              _contactPersonController.text = info['contactPerson'];
-                              setState(() {
-                                _selectedDate = (info['dateTime'] as Timestamp).toDate();
-                                _selectedInfoId = info.id;
-                              });
-                            },
-                          ),
-                          IconButton(
-                            icon: const Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              _deleteInfo(info.id);
-                            },
-                          ),
-                        ],
+                    return Card(
+                      color: cardColor, // Set card color to dynamic
+                      child: ListTile(
+                        title: Text(info['title'], style: TextStyle(color: textColor)),
+                        subtitle: Text(info['contactPerson'], style: TextStyle(color: textColor)),
+                        trailing: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            IconButton(
+                              icon: Icon(
+                                Icons.edit,
+                                color: Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.white
+                                    : Colors.black,
+                              ),
+                              onPressed: () {
+                                setState(() {
+                                  _selectedInfoId = info.id;
+                                  _titleController.text = info['title'];
+                                  _contentController.text = info['content'];
+                                  _contactPersonController.text = info['contactPerson'];
+                                  _selectedDate = (info['date'] as Timestamp).toDate();
+                                });
+                              },
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                Icons.delete,
+                                color: Theme.of(context).brightness == Brightness.dark
+                                    ? Colors.red
+                                    : Colors.red,
+                              ),
+                              onPressed: () => _deleteInfo(info.id),
+                            ),
+                          ],
+                        ),
                       ),
                     );
                   },
@@ -309,10 +330,34 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
               ],
             ),
           ),
-          if (_infoList.isEmpty)
-            Center(
-              child: CircularProgressIndicator(),
-            ),
+        ],
+      ),
+      floatingActionButton: Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: [
+          FloatingActionButton(
+            onPressed: () {
+              _scrollController.animateTo(
+                _scrollController.position.minScrollExtent,
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            },
+            backgroundColor: Colors.white,
+            child: Icon(Icons.arrow_upward, color: Colors.black),
+          ),
+          const SizedBox(height: 10),
+          FloatingActionButton(
+            onPressed: () {
+              _scrollController.animateTo(
+                _scrollController.position.maxScrollExtent,
+                duration: Duration(milliseconds: 300),
+                curve: Curves.easeInOut,
+              );
+            },
+            backgroundColor: Colors.white,
+            child: Icon(Icons.arrow_downward, color: Colors.black),
+          ),
         ],
       ),
     );

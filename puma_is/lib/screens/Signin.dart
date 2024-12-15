@@ -164,6 +164,7 @@ class SignInState extends State<SignIn> {
                       // Email input field
                       TextField(
                         onChanged: onChangedUsername,
+                        style: const TextStyle(color: Colors.black), // Text color when typing
                         decoration: InputDecoration(
                           suffixIcon: const Icon(
                             Icons.email,
@@ -173,6 +174,7 @@ class SignInState extends State<SignIn> {
                           labelStyle: const TextStyle(
                             fontWeight: FontWeight.bold,
                             color: Color(0xffB3C8CF),
+
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -180,7 +182,8 @@ class SignInState extends State<SignIn> {
                           focusedBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
                             borderSide: const BorderSide(
-                              color: Color(0xffB3C8CF),
+                            color: Color(0xffB3C8CF),
+
                             ),
                           ),
                         ),
@@ -190,6 +193,7 @@ class SignInState extends State<SignIn> {
                       TextField(
                         obscureText: !_isPasswordVisible,
                         onChanged: onChangedPassword,
+                        style: const TextStyle(color: Colors.black), // Text color when typing
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -207,7 +211,7 @@ class SignInState extends State<SignIn> {
                           labelText: 'Password',
                           labelStyle: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            color: Color(0xffB3C8CF),
+                           color: Color(0xffB3C8CF),
                           ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(10.0),
@@ -221,17 +225,6 @@ class SignInState extends State<SignIn> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      const Align(
-                        alignment: Alignment.centerRight,
-                        child: Text(
-                          'Forgot Password?',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 17,
-                            color: Colors.grey,
-                          ),
-                        ),
-                      ),
                       const SizedBox(height: 30),
                       // Sign In button
                       GestureDetector(

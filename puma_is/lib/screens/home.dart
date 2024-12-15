@@ -24,14 +24,14 @@ class _homePageState extends State<homePage> {
 
   // Data for Q&A
   final List<Map<String, String>> questions = [
-  {'question': 'How can I join?', 'answer': 'You can join by registering on our website or contacting us directly.'},
-  {'question': 'What events do you organize?', 'answer': 'We organize tech workshops, hackathons, and networking events.'},
-  {'question': 'When can I join the Puma registration?', 'answer': 'Wait for the next event or stay tuned in this application in the information section.'},
-  {'question': 'Do I need prior experience to join?', 'answer': 'No prior experience is required. We welcome all students interested in IS development.'},
-  {'question': 'Is there a membership fee?', 'answer': 'No, joining Puma IS is free for all students.'},
-  {'question': 'What skills can I gain by joining Puma IS?', 'answer': 'You can gain technical, organizational, and networking skills through workshops and events.'},
-  {'question': 'Can I participate in Puma events as a non-member?', 'answer': 'Yes, most of our events are open to everyone, even if you are not a member.'},
-];
+    {'question': 'How can I join?', 'answer': 'You can join by registering on our website or contacting us directly.'},
+    {'question': 'What events do you organize?', 'answer': 'We organize tech workshops, hackathons, and networking events.'},
+    {'question': 'When can I join the Puma registration?', 'answer': 'Wait for the next event or stay tuned in this application in the information section.'},
+    {'question': 'Do I need prior experience to join?', 'answer': 'No prior experience is required. We welcome all students interested in IS development.'},
+    {'question': 'Is there a membership fee?', 'answer': 'No, joining Puma IS is free for all students.'},
+    {'question': 'What skills can I gain by joining Puma IS?', 'answer': 'You can gain technical, organizational, and networking skills through workshops and events.'},
+    {'question': 'Can I participate in Puma events as a non-member?', 'answer': 'Yes, most of our events are open to everyone, even if you are not a member.'},
+  ];
 
   // Widget that returns different pages based on the selected feature
   Widget buildBody() {
@@ -42,8 +42,8 @@ class _homePageState extends State<homePage> {
         return InfoPage(); // Show InfoPage when selectedFeature is 'info'
       case 'events':
         return EventPage();
-         case 'member':
-        return MemberPage(); 
+      case 'member':
+        return MemberPage();
       default:
         return Container(
           decoration: const BoxDecoration(
@@ -166,7 +166,12 @@ class _homePageState extends State<homePage> {
                           children: questions.map((questionData) {
                             final index = questions.indexOf(questionData);
                             return ExpansionTile(
-                              title: Text(questionData['question']!),
+                              title: Text(
+                                questionData['question']!,
+                                style: const TextStyle(
+                                  color: Colors.black, // Change question color to black
+                                ),
+                              ),
                               children: [
                                 Padding(
                                   padding: const EdgeInsets.all(8.0),
