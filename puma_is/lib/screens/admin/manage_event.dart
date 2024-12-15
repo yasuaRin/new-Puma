@@ -40,7 +40,7 @@ class _ManageEventPageState extends State<ManageEventPage> {
         _dateController.text.isEmpty ||
         _cpController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please fill in all fields and select a date")),
+        SnackBar(content: Text("Please fill in all fields and select a date")),
       );
       return;
     }
@@ -131,9 +131,12 @@ class _ManageEventPageState extends State<ManageEventPage> {
     isDarkMode = Theme.of(context).brightness == Brightness.dark;
     Color buttonColor = isDarkMode ? Colors.white : Colors.black;
     Color textColor = isDarkMode ? Colors.white : Colors.black;
+    Color boxColor = isDarkMode ? Colors.black : Colors.white; 
+    Color textFieldBackgroundColor = isDarkMode ? Colors.white : Colors.white; 
+    Color borderColor = isDarkMode ? Colors.black : Colors.black;
 
     return Scaffold(
-      backgroundColor: Colors.white, // Set the background color to white for the entire page
+      backgroundColor: isDarkMode ? Colors.black : Colors.white, // Set the background color to black for the entire page in dark mode
       appBar: AppBar(
         backgroundColor: isDarkMode ? Colors.black : Colors.white, // Set app bar color based on the theme
         title: Center(
@@ -142,7 +145,7 @@ class _ManageEventPageState extends State<ManageEventPage> {
             children: [
               Icon(
                 Icons.warning, // Warning icon
-                color: Colors.black, // Set icon color to black
+                color: isDarkMode ? Colors.white : Colors.black, // Set icon color based on dark mode
               ),
               const SizedBox(width: 8), // Space between icon and text
               Text(
@@ -154,7 +157,7 @@ class _ManageEventPageState extends State<ManageEventPage> {
               const SizedBox(width: 8), // Space between text and icon
               Icon(
                 Icons.warning, // Warning icon
-                color: Colors.black, // Set icon color to black
+                color: isDarkMode ? Colors.white : Colors.black, // Set icon color based on dark mode
               ),
             ],
           ),
@@ -172,6 +175,7 @@ class _ManageEventPageState extends State<ManageEventPage> {
                 Card(
                   elevation: 5.0,
                   margin: const EdgeInsets.all(8.0),
+                  color: boxColor, // Set background color based on theme (black in dark mode)
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -185,19 +189,19 @@ class _ManageEventPageState extends State<ManageEventPage> {
                           ),
                         ),
                         const SizedBox(height: 20),
-                        _buildTextField(_event_IDController, 'Event ID'),
+                        _buildTextField(_event_IDController, 'Event ID', borderColor: borderColor, backgroundColor: textFieldBackgroundColor),
                         const SizedBox(height: 15),
-                        _buildTextField(_titleController, 'Title'),
+                        _buildTextField(_titleController, 'Title', borderColor: borderColor, backgroundColor: textFieldBackgroundColor),
                         const SizedBox(height: 15),
-                        _buildTextField(_descriptionController, 'Description'),
+                        _buildTextField(_descriptionController, 'Description', borderColor: borderColor, backgroundColor: textFieldBackgroundColor),
                         const SizedBox(height: 15),
-                        _buildTextField(_locationController, 'Location'),
+                        _buildTextField(_locationController, 'Location', borderColor: borderColor, backgroundColor: textFieldBackgroundColor),
                         const SizedBox(height: 15),
-                        _buildTextField(_statusController, 'Status'),
+                        _buildTextField(_statusController, 'Status', borderColor: borderColor, backgroundColor: textFieldBackgroundColor),
                         const SizedBox(height: 15),
-                        _buildTextField(_cpController, 'Contact Person'),
+                        _buildTextField(_cpController, 'Contact Person', borderColor: borderColor, backgroundColor: textFieldBackgroundColor),
                         const SizedBox(height: 15),
-                        _buildTextField(_dateController, 'Date (YYYY-MM-DD)', isDate: true),
+                        _buildTextField(_dateController, 'Date (YYYY-MM-DD)', isDate: true, borderColor: borderColor, backgroundColor: textFieldBackgroundColor),
                         const SizedBox(height: 20),
                         ElevatedButton(
                           onPressed: () {
@@ -218,7 +222,7 @@ class _ManageEventPageState extends State<ManageEventPage> {
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: isDarkMode ? Colors.white : Colors.black,
+                    color: textColor,
                   ),
                 ),
                 ListView.builder(
@@ -230,13 +234,13 @@ class _ManageEventPageState extends State<ManageEventPage> {
                       title: Text(
                         event['title'],
                         style: TextStyle(
-                          color: isDarkMode ? Colors.white : Colors.black,
+                          color: textColor,
                         ),
                       ),
                       subtitle: Text(
                         event['description'],
                         style: TextStyle(
-                          color: isDarkMode ? Colors.white : Colors.black,
+                          color: textColor,
                         ),
                       ),
                       trailing: Row(
@@ -251,14 +255,14 @@ class _ManageEventPageState extends State<ManageEventPage> {
                               _locationController.text = event['location'];
                               _statusController.text = event['Status'];
                               _cpController.text = event['cp'];
-                              _dateController.text = event['date']; // Directly use the date string
+                              _dateController.text = event['date'];
                               setState(() {
                                 _selectedEvent_ID = event.id;
                               });
                             },
                           ),
                           IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
+                            icon: Icon(Icons.delete, color: buttonColor), // Adjust icon color
                             onPressed: () {
                               _deleteEvent(event.id);
                             },
@@ -271,55 +275,56 @@ class _ManageEventPageState extends State<ManageEventPage> {
               ],
             ),
           ),
-        ],
-      ),
-      floatingActionButton: Column(
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: [
-          // Scroll Up Button
-          FloatingActionButton(
+          Positioned(
+            bottom: 20,
+            right: 20,
+            child: Column(
+              children: [
+                FloatingActionButton(
+                  onPressed: () {
+                    _scrollController.animateTo(
+                      _scrollController.position.minScrollExtent,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeInOut,
+                    );
+                  },
+                   backgroundColor: isDarkMode ? Colors.white : Colors.teal,
+                  child: Icon(Icons.arrow_upward),
+                  
+                ),
+                const SizedBox(height: 10),
+                    FloatingActionButton(
             onPressed: () {
               _scrollController.animateTo(
-                0, // Scroll to top
-                duration: const Duration(milliseconds: 300),
+                _scrollController.position.maxScrollExtent,
+                duration: const Duration(milliseconds: 500),
                 curve: Curves.easeInOut,
               );
             },
-            backgroundColor: buttonColor,
-            child: const Icon(Icons.arrow_upward),
+            child: const Icon(Icons.arrow_downward),
+            backgroundColor: isDarkMode ? Colors.white : Colors.teal,
           ),
-          const SizedBox(height: 10),
-          // Clear Fields Button
-          FloatingActionButton(
-            onPressed: _clearFields,
-            backgroundColor: buttonColor,
-            child: const Icon(Icons.clear),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
 
-  // Build text field with controller
-  Widget _buildTextField(TextEditingController controller, String label, {bool isDate = false}) {
-    return TextField(
+  // TextField builder to reuse the code for each input field
+  Widget _buildTextField(TextEditingController controller, String label, {bool isDate = false, Color? borderColor, Color? backgroundColor}) {
+    return TextFormField(
       controller: controller,
-      style: TextStyle(
-        color: Colors.black, // Text color to black
-      ),
+      style: TextStyle(color: isDarkMode ? Colors.black : Colors.black), // Set text color to black for dark mode
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(
-          color: Colors.black, // Label text color to black
-        ),
+        labelStyle: TextStyle(color: borderColor),
+        fillColor: backgroundColor,
+        filled: true,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10), // Add rounded corners to input fields
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(
-            color: Colors.blue, // Set color when field is focused
-            width: 2,
-          ),
+          borderRadius: BorderRadius.circular(8),
+          borderSide: BorderSide(color: borderColor ?? Colors.grey),
         ),
       ),
       keyboardType: isDate ? TextInputType.datetime : TextInputType.text,
