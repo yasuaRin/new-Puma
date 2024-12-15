@@ -18,16 +18,14 @@ class UiProvider extends ChangeNotifier {
     primaryColorDark: Colors.white,
   );
 
-  // Corrected the `changeTheme` function and other errors
   changeTheme() {
-    _isDark = !_isDark;  // Fixed the mistake here
+    _isDark = !_isDark;
     storage.setBool("isDark", _isDark);
     notifyListeners();
   }
 
-  // Fixed the init method and initialization of storage
   init() async {
-    storage = await SharedPreferences.getInstance();  // Fixed the typo here
+    storage = await SharedPreferences.getInstance();  
     _isDark = storage.getBool("isDark") ?? false;
     notifyListeners();
   }

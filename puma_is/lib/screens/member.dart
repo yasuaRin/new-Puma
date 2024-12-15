@@ -14,7 +14,7 @@ class _MemberPageState extends State<MemberPage> {
   String _currentFilter = 'All';
   ScrollController _scrollController = ScrollController();
   bool _isLoadingMore = false;
-  int _itemsLimit = 13; // Display all members initially
+  int _itemsLimit = 13; 
 
   final Map<String, String> memberImages = {
     'John Doe': 'assets/images/johndoe.jpg',
@@ -32,7 +32,6 @@ class _MemberPageState extends State<MemberPage> {
     'Jacky Witeen': 'assets/images/jackywiteen.jpeg',
   };
 
-  // Fetch members by division
   void _fetchMembersByDivision(String division) async {
     try {
       var memberQuery = FirebaseFirestore.instance.collection('Members');
@@ -82,7 +81,6 @@ class _MemberPageState extends State<MemberPage> {
     super.dispose();
   }
 
-  // Scroll listener to load more members
   void _scrollListener() {
     if (_scrollController.position.pixels ==
             _scrollController.position.maxScrollExtent &&
@@ -94,7 +92,6 @@ class _MemberPageState extends State<MemberPage> {
     }
   }
 
-  // Load more members (not necessary anymore since we're showing all)
   void _loadMoreMembers() {
     Future.delayed(const Duration(seconds: 2), () {
       setState(() {
@@ -145,10 +142,10 @@ class _MemberPageState extends State<MemberPage> {
       ),
       body: LayoutBuilder(
         builder: (context, constraints) {
-          int crossAxisCount = 2; // Always display 2 cards per row
-          double childAspectRatio = 1.0; // Adjust aspect ratio to fit 2 cards per row
+          int crossAxisCount = 2; 
+          double childAspectRatio = 1.0; 
 
-          return SingleChildScrollView( // Make the entire body scrollable
+          return SingleChildScrollView( 
             child: Column(
               children: [
                 Padding(
@@ -162,8 +159,8 @@ class _MemberPageState extends State<MemberPage> {
                         fontSize: 22,
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).brightness == Brightness.dark
-                            ? Colors.white // White text for dark mode
-                            : Colors.black, // Black text for light mode
+                            ? Colors.white 
+                            : Colors.black, 
                       ),
                     ),
                   ),
@@ -181,13 +178,12 @@ class _MemberPageState extends State<MemberPage> {
                       )
                     : GridView.builder(
                         controller: _scrollController,
-                        shrinkWrap: true, // Avoid overflow issue by making the grid take the space it needs
-                        physics: NeverScrollableScrollPhysics(), // Disable internal scrolling of GridView
+                        physics: NeverScrollableScrollPhysics(), 
                         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: crossAxisCount, // 2 cards per row
+                          crossAxisCount: crossAxisCount, 
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10,
-                          childAspectRatio: childAspectRatio, // Adjust aspect ratio for 2 cards per row
+                          childAspectRatio: childAspectRatio,
                         ),
                         itemCount: _filteredMembers.length,
                         itemBuilder: (context, index) {
@@ -234,7 +230,7 @@ class _MemberPageState extends State<MemberPage> {
         child: Container(
           padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
-            color: isDarkMode ? Colors.grey[800] : Colors.white, // Set card color based on the theme
+            color: isDarkMode ? Colors.grey[800] : Colors.white,
             borderRadius: BorderRadius.circular(15),
           ),
           child: Column(
@@ -245,7 +241,7 @@ class _MemberPageState extends State<MemberPage> {
                 style: TextStyle(
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
-                  color: isDarkMode ? Colors.white : Colors.black, // Change text color based on the theme
+                  color: isDarkMode ? Colors.white : Colors.black, 
                 ),
                 textAlign: TextAlign.center,
                 maxLines: 2,
@@ -267,10 +263,10 @@ class _MemberPageState extends State<MemberPage> {
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 14, 
-                  color: isDarkMode ? Colors.white70 : Colors.black54, // Adjust text color for dark and light mode
+                  color: isDarkMode ? Colors.white70 : Colors.black54,
                 ),
               ),
-              const SizedBox(height: 36), // Add 36px bottom padding
+              const SizedBox(height: 36), 
             ],
           ),
         ),

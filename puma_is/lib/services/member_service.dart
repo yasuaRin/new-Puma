@@ -4,7 +4,6 @@ class MemberService {
   final CollectionReference _memberCollection =
       FirebaseFirestore.instance.collection('Members');
 
-  // Add new member
   Future<void> addMember({
     required String fullName,
     required int batch, 
@@ -19,9 +18,8 @@ class MemberService {
     });
   }
 
-  // Update member
   Future<void> updateMember({
-    required String memberId, // Added memberId to specify which member to update
+    required String memberId, 
     required String fullName,
     required int batch,
     required String position,
@@ -35,12 +33,10 @@ class MemberService {
     });
   }
 
-  // Delete member
   Future<void> deleteMember(String memberId) {
     return _memberCollection.doc(memberId).delete();
   }
 
-  // Fetch all members
   Future<List<Map<String, dynamic>>> getAllMembers() async {
     QuerySnapshot snapshot = await _memberCollection.get();
     return snapshot.docs.map((doc) {
@@ -51,7 +47,6 @@ class MemberService {
     }).toList();
   }
 
-  // Fetch members by batch (corrected date-based logic to batch-based logic)
   Future<List<Map<String, dynamic>>> getMembersByBatch(int batch) async {
     QuerySnapshot snapshot = await _memberCollection
         .where('batch', isEqualTo: batch)

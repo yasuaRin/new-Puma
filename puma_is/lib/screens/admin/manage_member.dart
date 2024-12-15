@@ -44,7 +44,6 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
       return;
     }
 
-    // Ensure batch is numeric
     final int? batch = int.tryParse(_batchController.text);
     if (batch == null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -119,13 +118,12 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Determine the current theme mode
     final isDarkMode = Theme.of(context).brightness == Brightness.dark;
     final primaryColor = isDarkMode ? Colors.white : Colors.black;
     final backgroundColor = isDarkMode ? Colors.black : Colors.white;
 
     return Scaffold(
-      backgroundColor: backgroundColor, // Set the scaffold background color based on dark mode
+      backgroundColor: backgroundColor, 
       appBar: AppBar(
         title: Center(
           child: Row(
@@ -158,7 +156,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
         controller: _scrollController,
         padding: const EdgeInsets.all(16.0),
         child: Container(
-          color: isDarkMode ? Colors.black : Colors.white, // Set background color for the body
+          color: isDarkMode ? Colors.black : Colors.white, 
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -167,7 +165,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
-                color: isDarkMode ? Colors.grey.shade800 : Color(0xFFF2F2F2), // equivalent to white with slight opacity (200), // Card background color
+                color: isDarkMode ? Colors.grey.shade800 : Color(0xFFF2F2F2), 
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
@@ -186,7 +184,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                         decoration: InputDecoration(
                           labelText: 'Full Name',
                           filled: true,
-                          fillColor: Colors.white, // White fill color
+                          fillColor: Colors.white, 
                           labelStyle: TextStyle(color: Colors.black),
                           hintStyle: TextStyle(color: Colors.black),
                           border: OutlineInputBorder(
@@ -202,7 +200,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                         decoration: InputDecoration(
                           labelText: 'Batch',
                           filled: true,
-                          fillColor: Colors.white, // White fill color
+                          fillColor: Colors.white, 
                           labelStyle: TextStyle(color: Colors.black),
                           hintStyle: TextStyle(color: Colors.black),
                           border: OutlineInputBorder(
@@ -217,7 +215,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                         decoration: InputDecoration(
                           labelText: 'Position',
                           filled: true,
-                          fillColor: Colors.white, // White fill color
+                          fillColor: Colors.white, 
                           labelStyle: TextStyle(color: Colors.black),
                           hintStyle: TextStyle(color: Colors.black),
                           border: OutlineInputBorder(
@@ -232,7 +230,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                         decoration: InputDecoration(
                           labelText: 'Division',
                           filled: true,
-                          fillColor: Colors.white, // White fill color
+                          fillColor: Colors.white, 
                           labelStyle: TextStyle(color: Colors.black),
                           hintStyle: TextStyle(color: Colors.black),
                           border: OutlineInputBorder(
@@ -250,7 +248,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                           backgroundColor: isDarkMode ? Colors.white : Colors.black,
                           padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30),
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20), // Set radius here to round the corners
+                            borderRadius: BorderRadius.circular(20), 
                           ),
                         ),
                         child: Text(
@@ -280,7 +278,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                 itemBuilder: (context, index) {
                   var member = _memberList[index];
                   return Card(
-                   color: isDarkMode ? Colors.grey.shade800 : Color(0xFFF2F2F2), // equivalent to white with slight opacity (200), // Card background color
+                   color: isDarkMode ? Colors.grey.shade800 : Color(0xFFF2F2F2), 
                     child: ListTile(
                       title: Text(member['fullName'], style: TextStyle(color: primaryColor)),
                       subtitle: Text(
@@ -320,7 +318,6 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
           ),
         ),
       ),
-      // Scroll Up and Scroll Down buttons
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(bottom: 20),
@@ -336,7 +333,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                 );
               },
               child: const Icon(Icons.arrow_upward),
-              backgroundColor: Colors.white, // Floating button color (white)
+              backgroundColor: Colors.white, 
             ),
             const SizedBox(height: 10),
             FloatingActionButton(
@@ -348,7 +345,7 @@ class _ManageMemberPageState extends State<ManageMemberPage> {
                 );
               },
               child: const Icon(Icons.arrow_downward),
-              backgroundColor: Colors.white, // Floating button color (white)
+              backgroundColor: Colors.white, 
             ),
           ],
         ),

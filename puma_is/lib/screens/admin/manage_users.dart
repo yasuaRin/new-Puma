@@ -200,7 +200,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(15),
               ),
-              color: Colors.grey[800],  // Set the card color to grey[800]
+              color: Colors.grey[800],
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
@@ -244,10 +244,10 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                         _handleUserAction(userId: _selectedUserId);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: isDarkMode ? Colors.white : Colors.black, // Change background based on theme
-                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30), // Adjust padding as requested
+                        backgroundColor: isDarkMode ? Colors.white : Colors.black, 
+                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 30), 
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(20), // Adjust the border radius as requested
+                          borderRadius: BorderRadius.circular(20),
                         ),
                       ),
                       child: Text(
@@ -255,7 +255,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                         style: TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: isDarkMode ? Colors.black : Colors.white, // Text color opposite to background
+                          color: isDarkMode ? Colors.black : Colors.white, 
                         ),
                       ),
                     ),
@@ -281,10 +281,10 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                 return Card(
                   elevation: 5,
                   margin: const EdgeInsets.symmetric(vertical: 8),
-                  color: Colors.grey[800],  // Set the card color to grey[800]
+                  color: Colors.grey[800], 
                   child: ListTile(
-                    title: Text(user['fullName'], style: TextStyle(color: Colors.white)), // Ensure the text is visible
-                    subtitle: Text(user['email'], style: TextStyle(color: Colors.white)), // Ensure the text is visible
+                    title: Text(user['fullName'], style: TextStyle(color: Colors.white)), 
+                    subtitle: Text(user['email'], style: TextStyle(color: Colors.white)), 
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -296,7 +296,7 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
                               _IDController.text = user['ID'];
                               _emailController.text = user['email'];
                               _fullNameController.text = user['fullName'];
-                              // Do not pre-fill the password fields
+                             
                             });
                           },
                         ),
@@ -341,9 +341,9 @@ class _ManageUsersPageState extends State<ManageUsersPage> {
       obscureText: obscureText,
       decoration: InputDecoration(
         labelText: label,
-        labelStyle: TextStyle(color: Colors.black),  // Set label text color to black
+        labelStyle: TextStyle(color: Colors.black),  
         filled: true,
-        fillColor: Colors.white,  // Set the box color to white
+        fillColor: Colors.white, 
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
         ),

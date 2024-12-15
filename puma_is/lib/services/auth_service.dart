@@ -7,29 +7,25 @@ import 'package:puma_is/screens/home.dart';
 class AuthService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
-  // Method to get full name from Firestore based on the email
   Future<String?> getFullNameByEmail(String email) async {
     try {
-      // Query Firestore for the user's full name using email
       final querySnapshot = await _firestore
           .collection('user')
           .where('email', isEqualTo: email)
           .get();
 
       if (querySnapshot.docs.isNotEmpty) {
-        // Return the full name if found
         return querySnapshot.docs.first['fullName'];
       } else {
         print("No user found for the email: $email");
-        return null; // No user found
+        return null;
       }
     } catch (e) {
       print("Error fetching full name: $e");
-      return null; // Handle error and return null
+      return null; 
     }
   }
 
-  // Method to handle sign up process
   Future<void> signup({
     required String id,
     required String confirmPassword,
@@ -40,13 +36,11 @@ class AuthService {
     required BuildContext context,
   }) async {
     try {
-      // Create user
       UserCredential userCredential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
 
       final user = userCredential.user;
 
-      // Save additional data to Firestore
       await _firestore.collection('user').doc(userCredential.user!.uid).set({
         'ID': id,
         'fullName': fullName,
@@ -55,15 +49,12 @@ class AuthService {
         'confirmPassword': confirmPassword,
         'termsCondition': termsCondition,
         'createdAt':
-            FieldValue.serverTimestamp(), // Save timestamp for registration
+            FieldValue.serverTimestamp(), 
       });
 
-      // Get the logged-in user's email
       String? loggedInEmail = FirebaseAuth.instance.currentUser?.email;
 
-      // Check if the email is successfully fetched
       if (loggedInEmail != null) {
-        // Navigate to the homepage with the logged-in email
         await Future.delayed(const Duration(seconds: 1));
         Navigator.pushReplacement(
           context,
@@ -73,7 +64,6 @@ class AuthService {
           ),
         );
       } else {
-        // If no email is found, show a toast error message
         Fluttertoast.showToast(
           msg: 'Error: Could not fetch logged-in email.',
           toastLength: Toast.LENGTH_LONG,
@@ -110,29 +100,24 @@ class AuthService {
     }
   }
 
-  // Method to handle login process
   Future<void> login({
     required String email,
     required String password,
     required BuildContext context,
   }) async {
     try {
-      // Sign in the user
       UserCredential userCredential = await FirebaseAuth.instance
           .signInWithEmailAndPassword(email: email, password: password);
 
-      // Get the logged-in user's email
       String? loggedInEmail = userCredential.user?.email;
 
       if (loggedInEmail != null) {
-        // Check if the user's data exists in Firestore
         DocumentSnapshot userDoc = await _firestore
             .collection('user')
             .doc(userCredential.user!.uid)
             .get();
 
         if (userDoc.exists) {
-          // If user data exists in Firestore, navigate to the homepage
           await Future.delayed(const Duration(seconds: 1));
           Navigator.pushReplacement(
             context,
@@ -142,7 +127,6 @@ class AuthService {
             ),
           );
         } else {
-          // If no user data exists in Firestore, show an error
           Fluttertoast.showToast(
             msg: 'User data not found. Please sign up first.',
             toastLength: Toast.LENGTH_LONG,
@@ -151,7 +135,6 @@ class AuthService {
             textColor: Colors.white,
             fontSize: 14.0,
           );
-          // Log out the user since no data is found
           await FirebaseAuth.instance.signOut();
         }
       } else {
@@ -191,7 +174,6 @@ class AuthService {
     }
   }
 
-  // Method to handle logout
   Future<void> logout(BuildContext context) async {
     try {
       await FirebaseAuth.instance.signOut();

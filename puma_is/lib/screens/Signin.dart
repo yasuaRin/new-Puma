@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // Firebase Auth
+import 'package:firebase_auth/firebase_auth.dart'; 
 import 'package:puma_is/screens/admin/Admin_Dashboard.dart';
-import 'package:puma_is/screens/home.dart'; // Home Page
-import 'Signup.dart'; // Signup Page
+import 'package:puma_is/screens/home.dart'; 
+import 'Signup.dart'; 
 
 class SignIn extends StatefulWidget {
   const SignIn({super.key});
@@ -16,40 +16,33 @@ class SignInState extends State<SignIn> {
   String password = '';
   bool _isPasswordVisible = false;
 
-  // Callback to capture the email input
   void onChangedUsername(String value) {
     setState(() {
       email = value;
     });
   }
 
-  // Callback to capture the password input
   void onChangedPassword(String value) {
     setState(() {
       password = value;
     });
   }
 
-  // Validate Email format
   bool _validateEmail(String email) {
     return RegExp(r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$").hasMatch(email);
   }
 
-  // Validate Password (minimum length check)
   bool _validatePassword(String password) {
     return password.length >= 6;
   }
 
-  // Sign In button action
   Future<void> onPressedSignIn() async {
     if (email == 'admin@gmail.com' && password == 'Admin123') {
-      // Admin Login
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const Admin_Dashboard()),
       );
     } else {
-      // Firebase authentication for regular users
       if (!_validateEmail(email)) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Please enter a valid email address')),
@@ -65,30 +58,25 @@ class SignInState extends State<SignIn> {
       }
 
       try {
-        // Firebase sign-in
         UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: email,
           password: password,
         );
         
-        // If the login is successful, navigate to the home page
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => homePage(loggedInEmail: email)),
         );
       } on FirebaseAuthException catch (e) {
         if (e.code == 'user-not-found') {
-          // User not found error
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('No account found. Please create an account.')),
           );
         } else if (e.code == 'wrong-password') {
-          // Wrong password error
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Incorrect password. Please try again.')),
           );
         } else {
-          // Other Firebase authentication errors
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Error signing in: ${e.message}')),
           );
@@ -97,7 +85,6 @@ class SignInState extends State<SignIn> {
     }
   }
 
-  // Navigate to Sign Up screen
   void onPressedSignUp() {
     Navigator.push(
       context,
@@ -110,7 +97,6 @@ class SignInState extends State<SignIn> {
     return Scaffold(
       body: Stack(
         children: [
-          // Background gradient
           Container(
             height: double.infinity,
             width: double.infinity,
@@ -161,10 +147,9 @@ class SignInState extends State<SignIn> {
                   padding: const EdgeInsets.all(18.0),
                   child: Column(
                     children: [
-                      // Email input field
                       TextField(
                         onChanged: onChangedUsername,
-                        style: const TextStyle(color: Colors.black), // Text color when typing
+                        style: const TextStyle(color: Colors.black), 
                         decoration: InputDecoration(
                           suffixIcon: const Icon(
                             Icons.email,
@@ -189,11 +174,10 @@ class SignInState extends State<SignIn> {
                         ),
                       ),
                       const SizedBox(height: 20),
-                      // Password input field
                       TextField(
                         obscureText: !_isPasswordVisible,
                         onChanged: onChangedPassword,
-                        style: const TextStyle(color: Colors.black), // Text color when typing
+                        style: const TextStyle(color: Colors.black), 
                         decoration: InputDecoration(
                           suffixIcon: IconButton(
                             icon: Icon(
@@ -226,7 +210,6 @@ class SignInState extends State<SignIn> {
                       ),
                       const SizedBox(height: 20),
                       const SizedBox(height: 30),
-                      // Sign In button
                       GestureDetector(
                         onTap: onPressedSignIn,
                         child: Container(
@@ -251,7 +234,6 @@ class SignInState extends State<SignIn> {
                         ),
                       ),
                       const SizedBox(height: 30),
-                      // Sign up section
                       Column(
                         children: [
                           const Text(

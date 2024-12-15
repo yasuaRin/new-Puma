@@ -13,7 +13,6 @@ class MemberModel {
     required this.division
   });
 
-  // Factory constructor to create an instance from a map
   factory MemberModel.fromMap(Map<String, dynamic> map, String documentId) {
     return MemberModel(
       memberId: documentId,
@@ -24,7 +23,6 @@ class MemberModel {
     );
   }
 
-  // Convert an instance to a map for Firestore storage
   Map<String, dynamic> toMap() {
     return {
       'fullName': fullName,

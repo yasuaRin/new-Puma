@@ -110,10 +110,10 @@ class _EventPageState extends State<EventPage> {
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2, // 2 cards per row
+                  crossAxisCount: 2,
                   crossAxisSpacing: 16,
                   mainAxisSpacing: 16,
-                  childAspectRatio: 0.75, // Adjust the aspect ratio as needed
+                  childAspectRatio: 0.75, 
                 ),
                 itemCount: _currentFilter == 'upcoming'
                     ? _upcomingEvents.length
@@ -145,7 +145,7 @@ class _EventPageState extends State<EventPage> {
     Color statusColor = status == 'upcoming' ? Colors.green : Colors.red;
 
     return Card(
-      color: isDarkMode ? const Color.fromARGB(255, 64, 64, 64) : Colors.white, // Change color based on dark mode
+      color: isDarkMode ? const Color.fromARGB(255, 64, 64, 64) : Colors.white, 
       elevation: 5,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Column(

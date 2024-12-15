@@ -11,10 +11,10 @@ class SplashScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
       splash: SplashContent(),
-      nextScreen: AuthChecker(), // Use AuthChecker to decide the next screen
+      nextScreen: AuthChecker(), 
       splashTransition: SplashTransition.fadeTransition,
-      backgroundColor: Colors.white, // Customize background color
-      duration: 7000, // Extended duration to 7 seconds
+      backgroundColor: Colors.white, 
+      duration: 7000, 
     );
   }
 }
@@ -33,7 +33,6 @@ class _SplashContentState extends State<SplashContent> {
   void initState() {
     super.initState();
     Future.delayed(const Duration(milliseconds: 3500), () {
-      // Delay before showing the logo
       setState(() {
         showLogo = true;
       });
@@ -45,19 +44,18 @@ class _SplashContentState extends State<SplashContent> {
     return Stack(
       alignment: Alignment.center,
       children: [
-        // Image with zoom-in effect
         if (showLogo)
           TweenAnimationBuilder(
-            tween: Tween<double>(begin: 0.8, end: 3.0), // Increased zoom effect for more scale
-            duration: const Duration(milliseconds: 3000), // Animation duration
+            tween: Tween<double>(begin: 0.8, end: 3.0), 
+            duration: const Duration(milliseconds: 3000), 
             builder: (context, scale, child) {
               return Transform.scale(
                 scale: scale,
                 child: Image.asset(
-                  'assets/images/PUMA_IS_BG.jpg', // Ensure this file exists
-                  width: 900, // Fixed size of 900 pixels for width
-                  height: 900, // Fixed size of 900 pixels for height
-                  fit: BoxFit.contain, // Ensure image fits well
+                  'assets/images/PUMA_IS_BG.jpg', 
+                  width: 900, 
+                  height: 900, 
+                  fit: BoxFit.contain, 
                 ),
               );
             },
@@ -72,14 +70,11 @@ class AuthChecker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Check if the user is already signed in
     User? user = FirebaseAuth.instance.currentUser;
-
-    // If user is logged in, navigate to home screen, else sign-in screen
     if (user != null) {
-      return homePage(loggedInEmail: user.email!); // Pass logged-in user's email
+      return homePage(loggedInEmail: user.email!); 
     } else {
-      return const SignIn(); // Show sign-in screen if not logged in
+      return const SignIn(); 
     }
   }
 }

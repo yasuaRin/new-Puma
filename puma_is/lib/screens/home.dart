@@ -32,9 +32,8 @@ class _homePageState extends State<homePage> {
     {'question': 'Can I participate in Puma events as a non-member?', 'answer': 'Yes, most of our events are open to everyone, even if you are not a member.'},
   ];
 
-  // Widget that returns different pages based on the selected feature
   Widget buildBody() {
-    ThemeData theme = Theme.of(context); // Get current theme
+    ThemeData theme = Theme.of(context); 
     Color textColor = theme.brightness == Brightness.dark ? Colors.black : Colors.white;
     Color cardColor = theme.brightness == Brightness.dark ? Colors.white : Colors.black;
 
@@ -94,11 +93,10 @@ class _homePageState extends State<homePage> {
                     ),
                   ),
                   const SizedBox(height: 30),
-                  // Latest Information Section (without button)
                   Container(
                     padding: const EdgeInsets.all(15.0),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white,  // Set color based on theme
+                      color: Theme.of(context).brightness == Brightness.dark ? Colors.black : Colors.white, 
                       borderRadius: BorderRadius.circular(10),
                       boxShadow: const [
                         BoxShadow(
@@ -115,7 +113,7 @@ class _homePageState extends State<homePage> {
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black, // Set text color based on theme
+                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,  
                           ),
                         ),
                         const SizedBox(height: 10),
@@ -124,7 +122,7 @@ class _homePageState extends State<homePage> {
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             fontSize: 16,
-                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black, // Set text color based on theme
+                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
                           ),
                         ),
                       ],
@@ -150,14 +148,13 @@ class _homePageState extends State<homePage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Center the 'FAQ' text
                       Center(
                         child: Text(
                           'FAQ',
                           style: TextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.bold,
-                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black, // Change color based on theme
+                            color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
                           ),
                         ),
                       ),
@@ -168,7 +165,7 @@ class _homePageState extends State<homePage> {
                             title: Text(
                               questionData['question']!,
                               style: TextStyle(
-                                color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black, // Change color based on theme
+                                color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
                               ),
                             ),
                             children: [
@@ -177,7 +174,7 @@ class _homePageState extends State<homePage> {
                                 child: Text(
                                   questionData['answer']!,
                                   style: TextStyle(
-                                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black, // Change color based on theme
+                                    color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black, 
                                   ),
                                 ),
                               ),

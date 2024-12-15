@@ -21,7 +21,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
 
   final ScrollController _scrollController = ScrollController();
 
-  // Fetching info from Firestore
+
   void _fetchInfo() async {
     var info = await FirebaseFirestore.instance.collection('info').get();
     setState(() {
@@ -29,7 +29,6 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
     });
   }
 
-  // Handling add/update operation
   void _handleInfoAction({String? infoId}) {
     if (_titleController.text.isEmpty ||
         _contentController.text.isEmpty ||
@@ -64,7 +63,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
     _fetchInfo();
   }
 
-  // Deleting an info item
+
   void _deleteInfo(String infoId) async {
     showDialog(
       context: context,
@@ -96,7 +95,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
     );
   }
 
-  // Clearing input fields
+
   void _clearFields() {
     _titleController.clear();
     _contentController.clear();
@@ -107,7 +106,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
     });
   }
 
-  // Initializing state
+
   @override
   void initState() {
     super.initState();
@@ -129,7 +128,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
     Color textColor = Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black;
   Color cardColor = Theme.of(context).brightness == Brightness.dark
   ? Colors.grey[800]! 
-  : Color(0xFFF2F2F2);  // Custom light gray/white shade
+  : Color(0xFFF2F2F2); 
 
     return Scaffold(
       appBar: AppBar(
@@ -140,7 +139,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
               Icon(
                 Icons.warning_amber_outlined,
                 color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-              ), // First warning icon with dynamic color
+              ), 
               const SizedBox(width: 8),
               Text(
                 'Manage Info',
@@ -153,7 +152,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
               Icon(
                 Icons.warning_amber_outlined,
                 color: Theme.of(context).brightness == Brightness.dark ? Colors.white : Colors.black,
-              ), // Second warning icon with dynamic color
+              ),
             ],
           ),
         ),
@@ -168,13 +167,13 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Info Management Card
+            
                 Card(
                   elevation: 5,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15),
                   ),
-                  color: cardColor, // Set card color to dynamic
+                  color: cardColor, 
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -192,7 +191,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                           controller: _titleController,
                           decoration: InputDecoration(
                             labelText: 'Title',
-                            labelStyle: TextStyle(color: Colors.black),  // Set the label text color to black
+                            labelStyle: TextStyle(color: Colors.black),  
                             hintText: 'Enter title',
                             hintStyle: TextStyle(color: textColor),
                             filled: true,
@@ -205,7 +204,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                           controller: _contentController,
                           decoration: InputDecoration(
                             labelText: 'Content',
-                            labelStyle: TextStyle(color: Colors.black),  // Set the label text color to black
+                            labelStyle: TextStyle(color: Colors.black),  
                             hintText: 'Enter content',
                             hintStyle: TextStyle(color: textColor),
                             filled: true,
@@ -218,7 +217,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                           controller: _contactPersonController,
                           decoration: InputDecoration(
                             labelText: 'Contact Person',
-                            labelStyle: TextStyle(color: Colors.black),  // Set the label text color to black
+                            labelStyle: TextStyle(color: Colors.black), 
                             hintText: 'Enter contact person',
                             hintStyle: TextStyle(color: textColor),
                             filled: true,
@@ -248,7 +247,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                             _selectedDate == null
                                 ? "Pick Date"
                                 : "${_selectedDate!.toLocal()}".split(' ')[0],
-                            style: TextStyle(color: Colors.black), // Set text color to black
+                            style: TextStyle(color: Colors.black), 
                           ),
                         ),
                         const SizedBox(height: 20),
@@ -265,7 +264,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                           ),
                           child: Text(
                             _selectedInfoId == null ? 'Add Info' : 'Update Info',
-                            style: TextStyle(color: Colors.black), // Set text color to black
+                            style: TextStyle(color: Colors.black), 
                           ),
                         ),
                       ],
@@ -288,7 +287,7 @@ class _ManageInfoPageState extends State<ManageInfoPage> {
                   itemBuilder: (context, index) {
                     var info = _infoList[index];
                     return Card(
-                      color: cardColor, // Set card color to dynamic
+                      color: cardColor, 
                       child: ListTile(
                         title: Text(info['title'], style: TextStyle(color: textColor)),
                         subtitle: Text(info['contactPerson'], style: TextStyle(color: textColor)),

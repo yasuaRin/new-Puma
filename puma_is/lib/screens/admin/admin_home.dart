@@ -25,15 +25,15 @@ class _AdminHomeState extends State<AdminHome> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column( // Changed from Center to Column for better vertical alignment control
-            mainAxisAlignment: MainAxisAlignment.center, // Center the content vertically
+          child: Column( 
+            mainAxisAlignment: MainAxisAlignment.center, 
             children: [
-              Expanded( // Use Expanded to make the GridView take available space without expanding indefinitely
+              Expanded( 
                 child: GridView.count(
-                  crossAxisCount: 2, // 2 cards in each row
-                  crossAxisSpacing: 16.0, // Space between columns
-                  mainAxisSpacing: 16.0, // Space between rows
-                  shrinkWrap: true, // Ensures GridView takes only as much space as it needs
+                  crossAxisCount: 2, 
+                  crossAxisSpacing: 16.0,
+                  mainAxisSpacing: 16.0, 
+                  shrinkWrap: true, 
                   children: [
                     _buildCard(
                       title: 'Total Events',

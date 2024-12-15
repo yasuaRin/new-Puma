@@ -22,7 +22,6 @@ class _ManageEventPageState extends State<ManageEventPage> {
   final ScrollController _scrollController = ScrollController();
   bool isDarkMode = false;
 
-  // Fetch Events from Firebase
   void _fetchEvent() async {
     var event = await FirebaseFirestore.instance.collection('events').get();
     setState(() {
@@ -30,7 +29,6 @@ class _ManageEventPageState extends State<ManageEventPage> {
     });
   }
 
-  // Handle Create/Update Event
   void _handleEventAction({String? event_ID}) async {
     if (_event_IDController.text.isEmpty ||
         _titleController.text.isEmpty ||
@@ -59,11 +57,9 @@ class _ManageEventPageState extends State<ManageEventPage> {
 
     try {
       if (event_ID == null) {
-        // Add Event
         await FirebaseFirestore.instance.collection('events').add(eventData);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Event added successfully")));
       } else {
-        // Update Event
         await FirebaseFirestore.instance.collection('events').doc(event_ID).update(eventData);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Event updated successfully")));
       }
@@ -74,7 +70,6 @@ class _ManageEventPageState extends State<ManageEventPage> {
     }
   }
 
-  // Delete Event with Confirmation
   void _deleteEvent(String eventId) async {
     bool confirm = await showDialog(
       context: context,
@@ -105,7 +100,6 @@ class _ManageEventPageState extends State<ManageEventPage> {
     }
   }
 
-  // Clear Input Fields
   void _clearFields() {
     _event_IDController.clear();
     _titleController.clear();
@@ -127,7 +121,7 @@ class _ManageEventPageState extends State<ManageEventPage> {
 
   @override
   Widget build(BuildContext context) {
-    // Get the current theme to adjust colors
+
     isDarkMode = Theme.of(context).brightness == Brightness.dark;
     Color buttonColor = isDarkMode ? Colors.white : Colors.black;
     Color textColor = isDarkMode ? Colors.white : Colors.black;
@@ -137,28 +131,28 @@ class _ManageEventPageState extends State<ManageEventPage> {
     Color labelColor = isDarkMode ? Colors.white : Colors.black;
 
     return Scaffold(
-      backgroundColor: isDarkMode ? Colors.black : Colors.white, // Set the background color to black for the entire page in dark mode
+      backgroundColor: isDarkMode ? Colors.black : Colors.white,
       appBar: AppBar(
-        backgroundColor: isDarkMode ? Colors.black : Colors.white, // Set app bar color based on the theme
+        backgroundColor: isDarkMode ? Colors.black : Colors.white, 
         title: Center(
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
-                Icons.warning, // Warning icon
-                color: isDarkMode ? Colors.white : Colors.black, // Set icon color based on dark mode
+                Icons.warning, 
+                color: isDarkMode ? Colors.white : Colors.black, 
               ),
-              const SizedBox(width: 8), // Space between icon and text
+              const SizedBox(width: 8), 
               Text(
                 'Manage Event',
                 style: TextStyle(
                   color: isDarkMode ? Colors.white : Colors.black,
                 ),
               ),
-              const SizedBox(width: 8), // Space between text and icon
+              const SizedBox(width: 8), 
               Icon(
-                Icons.warning, // Warning icon
-                color: isDarkMode ? Colors.white : Colors.black, // Set icon color based on dark mode
+                Icons.warning, 
+                color: isDarkMode ? Colors.white : Colors.black, 
               ),
             ],
           ),
@@ -167,16 +161,15 @@ class _ManageEventPageState extends State<ManageEventPage> {
       body: Stack(
         children: [
           SingleChildScrollView(
-            controller: _scrollController, // Attach scroll controller
+            controller: _scrollController, 
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Card container with form fields
                 Card(
                   elevation: 5.0,
                   margin: const EdgeInsets.all(8.0),
-                  color: boxColor, // Set background color to gray for dark mode
+                  color: boxColor, 
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
@@ -209,11 +202,11 @@ class _ManageEventPageState extends State<ManageEventPage> {
                             _handleEventAction(event_ID: _selectedEvent_ID);
                           },
                             style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white, // Adjust button color
-                            foregroundColor: Colors.black, // Set the text color to black
+                            backgroundColor: Colors.white, 
+                            foregroundColor: Colors.black, 
                           ),
                           child: Text(
-                            _selectedEvent_ID == null ? 'Add Event' : 'Update Event', // This will display "Update Event" when editing an event
+                            _selectedEvent_ID == null ? 'Add Event' : 'Update Event',
                           ),
                         ),
                       ],
@@ -237,7 +230,7 @@ class _ManageEventPageState extends State<ManageEventPage> {
                     return Card(
                       elevation: 5.0,
                       margin: const EdgeInsets.symmetric(vertical: 8.0),
-                      color: boxColor, // Set the background color for each event box
+                      color: boxColor, 
                       child: ListTile(
                         title: Text(
                           event['title'],
@@ -338,7 +331,7 @@ class _ManageEventPageState extends State<ManageEventPage> {
     controller: controller,
     decoration: InputDecoration(
       labelText: label,
-      labelStyle: TextStyle(color: Colors.black), // Set the label color to black
+      labelStyle: TextStyle(color: Colors.black), 
       filled: true,
       fillColor: backgroundColor,
       border: OutlineInputBorder(

@@ -17,13 +17,10 @@ class Admin_Dashboard extends StatefulWidget {
 }
 
 class _AdminDashboardState extends State<Admin_Dashboard> {
-  String selectedFeature = 'dashboard'; // Default feature
+  String selectedFeature = 'dashboard';
 
-  // Method to dynamically load pages based on the selected feature
   Widget buildBody() {
     switch (selectedFeature) {
-      // case 'vote':
-      //   return const VotePage();
       case 'info':
         return InfoPage();
       case 'manage_info':
@@ -39,7 +36,7 @@ class _AdminDashboardState extends State<Admin_Dashboard> {
         case 'member':
         return MemberPage();
       default:
-        return const AdminHome(); // Render AdminHome by default
+        return const AdminHome(); 
     }
   }
 
@@ -68,7 +65,7 @@ class _AdminDashboardState extends State<Admin_Dashboard> {
                 setState(() {
                   selectedFeature = 'dashboard';
                 });
-                Navigator.pop(context); // Close the drawer
+                Navigator.pop(context);
               },
             ),
             ExpansionTile(
@@ -81,7 +78,7 @@ class _AdminDashboardState extends State<Admin_Dashboard> {
                     setState(() {
                       selectedFeature = 'manage_event';
                     });
-                    Navigator.pop(context); // Close the drawer
+                    Navigator.pop(context); 
                   },
                 ),
                 ListTile(
@@ -90,7 +87,7 @@ class _AdminDashboardState extends State<Admin_Dashboard> {
                     setState(() {
                       selectedFeature = 'event_page';
                     });
-                    Navigator.pop(context); // Close the drawer
+                    Navigator.pop(context); 
                   },
                 ),
               ],
@@ -105,7 +102,7 @@ class _AdminDashboardState extends State<Admin_Dashboard> {
                     setState(() {
                       selectedFeature = 'manage_info';
                     });
-                    Navigator.pop(context); // Close the drawer
+                    Navigator.pop(context); 
                   },
                 ),
                 ListTile(
@@ -114,7 +111,7 @@ class _AdminDashboardState extends State<Admin_Dashboard> {
                     setState(() {
                       selectedFeature = 'info';
                     });
-                    Navigator.pop(context); // Close the drawer
+                    Navigator.pop(context); 
                   },
                 ),
               ],
@@ -129,7 +126,7 @@ class _AdminDashboardState extends State<Admin_Dashboard> {
                     setState(() {
                       selectedFeature = 'manage_member';
                     });
-                    Navigator.pop(context); // Close the drawer
+                    Navigator.pop(context); 
                   },
                 ),
                 ListTile(
@@ -138,7 +135,7 @@ class _AdminDashboardState extends State<Admin_Dashboard> {
                     setState(() {
                       selectedFeature = 'member';
                     });
-                    Navigator.pop(context); // Close the drawer
+                    Navigator.pop(context);
                   },
                 ),
               ],

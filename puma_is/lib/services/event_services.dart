@@ -4,7 +4,6 @@ class EventServices {
   final CollectionReference _eventCollection =
       FirebaseFirestore.instance.collection('events');
 
-  // Add new event
   Future<void> addEvent({
     required String event_ID,
     required String title,
@@ -25,7 +24,6 @@ class EventServices {
     });
   }
 
-  // Update event
   Future<void> updateEvent({
     required String event_ID,
     required String title,
@@ -46,12 +44,10 @@ class EventServices {
     });
   }
 
-  // Delete event
   Future<void> deleteEvent(String eventId) {
     return _eventCollection.doc(eventId).delete();
   }
 
-  // Fetch all events
   Future<List<Map<String, dynamic>>> getAllEvent() async {
     QuerySnapshot snapshot = await _eventCollection.get();
     return snapshot.docs.map((doc) {
@@ -62,7 +58,6 @@ class EventServices {
     }).toList();
   }
 
-  // Fetch events for a specific date
   Future<List<Map<String, dynamic>>> getEventForDate(DateTime selectedDate) async {
     QuerySnapshot snapshot = await _eventCollection
         .where('dateTime', isEqualTo: selectedDate)
@@ -75,10 +70,9 @@ class EventServices {
     }).toList();
   }
 
-  // Fetch events by a specific filter
   Future<List<Map<String, dynamic>>> getEventByFilter(String filter) async {
     QuerySnapshot snapshot = await _eventCollection
-        .where('Status', isEqualTo: filter) // Replace 'status' with your filter field
+        .where('Status', isEqualTo: filter) 
         .get();
     return snapshot.docs.map((doc) {
       return {

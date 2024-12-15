@@ -4,7 +4,6 @@ class InfoServices {
   final CollectionReference _infoCollection =
       FirebaseFirestore.instance.collection('info');
 
-  // Add new info
   Future<void> addInfo({
     required String title,
     required String content,
@@ -19,7 +18,6 @@ class InfoServices {
     });
   }
 
-  // Update info
   Future<void> updateInfo({
     required String infoId,
     required String title,
@@ -34,13 +32,10 @@ class InfoServices {
       'contactPerson': contactPerson,
     });
   }
-
-  // Delete info
   Future<void> deleteInfo(String infoId) {
     return _infoCollection.doc(infoId).delete();
   }
 
-  // Fetch all info
   Future<List<Map<String, dynamic>>> getAllInfo() async {
     QuerySnapshot snapshot = await _infoCollection.get();
     return snapshot.docs.map((doc) {
@@ -51,7 +46,6 @@ class InfoServices {
     }).toList();
   }
 
-  // Fetch info for a specific date
   Future<List<Map<String, dynamic>>> getInfoForDate(DateTime selectedDate) async {
     QuerySnapshot snapshot = await _infoCollection
         .where('dateTime', isEqualTo: selectedDate)

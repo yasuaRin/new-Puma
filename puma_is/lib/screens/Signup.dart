@@ -1,6 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'Signin.dart'; // Import the SignIn page
+import 'Signin.dart'; 
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -18,25 +18,19 @@ class _SignupState extends State<Signup> {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
 
-  // Firebase Authentication instance
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // SignUp function
   Future<void> onSignUpPressed() async {
     if (_formKey.currentState?.validate() ?? false) {
       try {
-        // Create the user with email and password
         UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
           email: emailOrPhone,
           password: password,
         );
-        // If sign-up is successful, show a success message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Signup successful!')),
         );
-        // You can also navigate to another screen (e.g., Home screen)
       } on FirebaseAuthException catch (e) {
-        // Handle error messages from Firebase
         String message = e.message ?? 'An error occurred';
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(message)),
@@ -102,9 +96,8 @@ class _SignupState extends State<Signup> {
                     child: Column(
                       children: [
                         const SizedBox(height: 30),
-                        // Full Name Input Field
                         TextFormField(
-                          style: const TextStyle(color: Colors.black), // Text color when typing
+                          style: const TextStyle(color: Colors.black), 
                           decoration: InputDecoration(
                             suffixIcon: const Icon(
                               Icons.person,
@@ -130,9 +123,8 @@ class _SignupState extends State<Signup> {
                               value!.isEmpty ? 'Please enter your full name' : null,
                         ),
                         const SizedBox(height: 20),
-                        // Email Input Field
                         TextFormField(
-                          style: const TextStyle(color: Colors.black), // Text color when typing
+                          style: const TextStyle(color: Colors.black), 
                           decoration: InputDecoration(
                             suffixIcon: const Icon(
                               Icons.email,
@@ -158,10 +150,9 @@ class _SignupState extends State<Signup> {
                               value!.isEmpty ? 'Please enter your Gmail' : null,
                         ),
                         const SizedBox(height: 20),
-                        // Password Input Field
                         TextFormField(
                           obscureText: !_isPasswordVisible,
-                          style: const TextStyle(color: Colors.black), // Text color when typing
+                          style: const TextStyle(color: Colors.black), 
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -196,10 +187,9 @@ class _SignupState extends State<Signup> {
                               value!.isEmpty ? 'Please enter your password' : null,
                         ),
                         const SizedBox(height: 20),
-                        // Confirm Password Input Field
                         TextFormField(
                           obscureText: !_isConfirmPasswordVisible,
-                          style: const TextStyle(color: Colors.black), // Text color when typing
+                          style: const TextStyle(color: Colors.black), 
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
                               icon: Icon(
@@ -235,7 +225,6 @@ class _SignupState extends State<Signup> {
                               value != password ? 'Passwords do not match' : null,
                         ),
                         const SizedBox(height: 30),
-                        // SignUp Button
                         GestureDetector(
                           onTap: onSignUpPressed,
                           child: Container(
@@ -260,7 +249,6 @@ class _SignupState extends State<Signup> {
                           ),
                         ),
                         const SizedBox(height: 30),
-                        // Sign-In Navigation Text
                         GestureDetector(
                           onTap: () {
                             Navigator.push(
